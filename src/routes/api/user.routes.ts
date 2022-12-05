@@ -1,6 +1,6 @@
 import { Response, Request, Router } from "express";
 import UserModel from "@models/user.models";
-import { IUser } from "@pschemas/user.schemas";
+import { IUser } from "@i/user.i";
 const router = Router();
 router.get("/", (_req: Request, res: Response<IUser>) => {
   UserModel.find({}, (err: any, users: IUser) => {

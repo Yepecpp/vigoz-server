@@ -1,18 +1,6 @@
-import {z} from "zod"
-import {loginSchema, LoginSchema} from "@cschemas/login.schemas"
+import {LoginSchema} from "@cschemas/login.schemas"
+import {userZod, IUser} from "@i/../"
 import mongoose from "mongoose"
-// create an object schema
-export const userSchema = z.object({
-    name : z.string(),
-    login: loginSchema,
-    createdAt: z.date().optional(),
-    updatedAt: z.date().default(() => new Date()),
-    status: z.enum(["active", "inactive", "deleted"]).default("active"),
-    roles: z.array(z.string()).min(1),
-    meta: z.any().optional(),
-    info: z.any().optional()
-});
-export type IUser = z.infer<typeof userSchema>;
 // create a mongoose schema
 export let UserSchema = new mongoose.Schema<IUser>({
     name: {type: String, required: true},
@@ -26,7 +14,7 @@ export let UserSchema = new mongoose.Schema<IUser>({
 });
 // create a method to verify the schema
 UserSchema.methods.VerifySchema= ():boolean =>{
-    return userSchema.safeParse(this).success;
+    return userZod.safeParse(this).success;
 }
 
 
