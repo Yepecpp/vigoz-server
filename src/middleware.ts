@@ -8,13 +8,14 @@ const Middleware = {
     const err: Err = { msg: `Not Found - ${req.originalUrl}`, status: 404 };
     next(err);
   },
-  ErrorHandler: (err: Err, req: Request, res: Response, next: NextFunction) => {
+  ErrorHandler: (
+    err: Err,
+    __: Request,
+    res: Response<Err>,
+    _: NextFunction
+  ) => {
     err = err as Err;
-    console.log("hey");
-    res.status(err.status || 500);
-    res.send({
-      message: err.msg,
-    });
+    res.status(err.status || 500).send(err);
   },
 };
 export default Middleware;
