@@ -7,8 +7,8 @@ export const userZod = z.object({
     createdAt: z.date().optional(),
     updatedAt: z.date().default(() => new Date()),
     status: z.enum(["active", "inactive", "deleted"]).default("active"),
-    roles: z.array(z.string()).min(1),
+    roles: z.enum(["admin", "user"]).default("user"),
     meta: z.any().optional(),
     info: z.any().optional()
-});
+});   
 export type IUser = z.infer<typeof userZod>;

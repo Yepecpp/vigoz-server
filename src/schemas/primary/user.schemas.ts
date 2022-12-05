@@ -8,7 +8,7 @@ export let UserSchema = new mongoose.Schema<IUser>({
     createdAt: {type: Date, required: false},
     updatedAt: {type: Date, required: true},
     status: {type: String, required: true},
-    roles: {type: [String], required: true},
+    roles: {type: String, required: true},
     meta: {type: Object, required: false},
     info: {type: Object, required: false}
 });
