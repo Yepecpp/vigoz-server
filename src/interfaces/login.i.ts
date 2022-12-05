@@ -1,5 +1,6 @@
 import {z} from "zod"
 export const loginZod= z.object({
+    _id : z.string(),
     email: z.string().email(),
     passw: z.string().min(8),
  // provider is an enum of the providers we support

@@ -1,6 +1,7 @@
 import {z} from "zod"
 import { loginZod } from "./login.i";
 export const userZod = z.object({
+    _id : z.string(),
     name : z.string(),
     login: loginZod,
     createdAt: z.date().optional(),

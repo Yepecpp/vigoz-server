@@ -1,5 +1,5 @@
 import {LoginSchema} from "@cschemas/login.schemas"
-import {userZod, IUser} from "@i/../"
+import {userZod, IUser} from "@interfaces/user.i"
 import mongoose from "mongoose"
 // create a mongoose schema
 export let UserSchema = new mongoose.Schema<IUser>({

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ILogin, loginZod } from "@vigoz-intefaces/login.interfaces";
+import { ILogin, loginZod } from "@interfaces/login.i";
 export let LoginSchema = new mongoose.Schema<ILogin>({
     email: {type: String, required: true, unique: true},
     passw: {type: String, required: true},
