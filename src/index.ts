@@ -1,15 +1,16 @@
 import app from "./app";
 import Checkcon from "@libs/mongoose";
+import Logger from "@libs/logger";
 const port = process.env.PORT || 3000;
 Checkcon()
   .then(() => {
-    console.log('Connected to MongoDB');
+    Logger.success('Connected to MongoDB');
     app.listen(port, () => {
-      console.log(`Server is listening on http://localhost:${port}`);
+      Logger.info(`Server is listening on http://localhost:${port}`);
     });
   })
   .catch((err) => {
-    console.log(err);
+    Logger.error(err);
     process.exit(1);
   });
 //start server
