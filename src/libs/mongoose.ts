@@ -17,10 +17,9 @@ function CreateOptions(): any {
   };
   return { MONGO_URI, options };
 }
-
+const { MONGO_URI, options } = CreateOptions();
 async function Checkcon(): Promise<Mongoose> {
-  const { MONGO_URI, options } = CreateOptions();
-  console.log(MONGO_URI);
   return mongoose.connect(MONGO_URI, options as ConnectOptions);
 }
+
 export default Checkcon;
