@@ -11,4 +11,9 @@ export const userZod = z.object({
     meta: z.any().optional(),
     info: z.any().optional()
 });   
-export type IUser = z.infer<typeof userZod>;
+//export type IUser = z.infer<typeof userZod>;
+export interface IUser extends z.infer<typeof userZod>{
+    VerifySchema: ()=>{success:boolean, error:z.ZodError[]}
+    ToClient: ()=>z.infer<typeof userZod>;
+}
+
