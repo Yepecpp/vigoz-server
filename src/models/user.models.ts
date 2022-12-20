@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
+import {model} from "mongoose";
 import UserSchema from "@pschemas/user.schemas";
-import { IUser } from "@interfaces/user.i";
-const UserModel = mongoose.model<IUser>("User", UserSchema);
+import { userDocument } from "@interfaces/user.i";
+const UserModel = model<userDocument>("User", UserSchema);
 export default UserModel;

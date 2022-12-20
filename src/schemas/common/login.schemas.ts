@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ILogin, loginZod } from "@interfaces/login.i";
+import { ILogin } from "@interfaces/login.i";
 export let LoginSchema = new mongoose.Schema<ILogin>({
     email: {type: String, required: true, unique: true},
     username: {type: String, required: true, unique: true},
@@ -7,7 +7,7 @@ export let LoginSchema = new mongoose.Schema<ILogin>({
     provider: {type: String, required: true},
     lastLogin: {type: Date, required: false},
 });
-LoginSchema.methods.VerifySchema= ()=> {
+/*LoginSchema.methods.VerifySchema= ()=> {
     return loginZod.safeParse(this).success;
-}
+}*/
 
