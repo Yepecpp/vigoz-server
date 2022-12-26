@@ -17,23 +17,31 @@ let UserSchema = new mongoose.Schema<userDocument>({
   info: { type: Object, required: false },
 });
 UserSchema.pre("save", function (next) {
+  if (!this.createdAt) {
+    this.createdAt = new Date(Date.now());
+  }
   this.updatedAt = new Date(Date.now());
   Logger.info("UserSchema.pre save");
   next();
 });
 
 UserSchema.methods.ToClient = function (): IUser {
-  let user = this as any;
-  user.login.passw = undefined;
-  user.login._id = undefined;
-  user.meta= undefined;
-  user.createdAt = undefined;
-  user.updatedAt = undefined;
-  user.id = user._id;
-  user._id = undefined;
-  user.__v = undefined;
-  
-  return user as IUser;
+  const curr = this as userDocument; 
+  const  user = {
+    id : curr._id.toString(),
+    name: curr.name,
+    last_name: curr.last_name,
+    login: {
+      email: curr.login.email,
+      provider: curr.login.provider,
+    },
+    createdAt: curr.createdAt,
+    updatedAt: curr.updatedAt,
+    status: curr.status,
+    roles: curr.roles,
+    info: curr.info? curr.info : null,
+  } as IUser;
+  return user;
 };
 
 UserSchema.methods.VerifySchema = function (): {success: boolean, error?: z.ZodError<IUser>, data?: IUser}{

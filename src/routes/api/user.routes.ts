@@ -1,15 +1,20 @@
-import { Response, Request, Router } from "express";
+import { Response, Router } from "express";
 import UserModel from "@models/user.models";
 import Logger from "@libs/logger";
 import Encrypt from "@libs/encyrpt";
+import { PrivReq as Request } from "middleware";
+import { Roles } from "@interfaces/user.i";
 const router = Router();
 router.get("/", async (_req: Request, res: Response) => {
-  //this is where we get all the users; 
+  //this is where we get all the users;
   const users = await UserModel.find();
-  res.status(200).send({ msg: "users", users: users.map((user) => user.ToClient()) });
+  res
+    .status(200)
+    .send({ msg: "users", users: users.map((user) => user.ToClient()) });
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
+  const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
   const user = new UserModel(req.body.user);
   const check = user.VerifySchema();
@@ -17,6 +22,13 @@ router.post("/", async (req: Request, res: Response) => {
     Logger.warn("user model not valid");
     Logger.warn(check.error);
     res.status(400).send(check.error);
+    return;
+  }
+  //convert the creator role to a number
+  const creatorRole = creator ? Roles[creator.roles] : Roles.user;
+  if (creatorRole!==Roles.admin && creatorRole>= Roles[user.roles]) {
+    Logger.warn("role not authorized");
+    res.status(401).send({ msg: "role not authorized" });
     return;
   }
   //check if the user name or the email alr exists
@@ -37,12 +49,12 @@ router.post("/", async (req: Request, res: Response) => {
     });
     return;
   }
-  if (!user.createdAt) {user.createdAt = new Date(Date.now())
+  if (!user.createdAt) {
+    user.createdAt = new Date(Date.now());
     user.status = "active";
-    user.login.passw = await Encrypt.hash( user.login.passw);
-    };
+    user.login.passw = await Encrypt.hash(user.login.passw);
+  }
   await user.save();
   res.status(200).send({ msg: "user created", user: user.ToClient() });
-
 });
 export default router;
