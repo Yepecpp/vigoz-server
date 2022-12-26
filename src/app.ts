@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (_req: Request, res: Response) => {
   res.send("Hello World!");
 });
+app.use(Middleware.VerifyToken);
 app.use("/api/v1", ApiRouter);
 //error handling
 app.use(Middleware.NotFound);

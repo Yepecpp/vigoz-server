@@ -1,14 +1,43 @@
+import {Document} from "mongoose";
 import {z} from "zod"
 import { loginZod } from "./login.i";
+export enum Roles {
+    admin=0,
+    supervisor=1,
+    staff=2,
+    user=3
+}
 export const userZod = z.object({
-    _id : z.string(),
+    id : z.string().optional(),
     name : z.string(),
+    last_name : z.string(),
     login: loginZod,
     createdAt: z.date().optional(),
-    updatedAt: z.date().default(() => new Date()),
+    updatedAt: z.date().optional(),
     status: z.enum(["active", "inactive", "deleted"]).default("active"),
-    roles: z.enum(["admin", "user"]).default("user"),
-    meta: z.any().optional(),
-    info: z.any().optional()
+    roles: z.enum(["admin","supervisor","staff", "user"]).default("user"),
+    meta: z.any().nullish(),
+    info: z.any().nullish()
 });   
+//export type IUser = z.infer<typeof userZod>;
 export type IUser = z.infer<typeof userZod>;
+export type userDocument = Document & IUser & {
+    VerifySchema(): {success: boolean, error?: z.ZodError<IUser>, data?: IUser};
+    ToClient(): IUser;
+};
+
+/* test
+const data = {
+    name: "John",
+    last_name: "Doe",
+    login: {
+        email: "yepe@yepe.me",
+        username: "yepe",
+        passw: "12345678",
+        provider: "local"
+    },
+    roles: "admin",
+} as any 
+console.log(userZod.safeParse(data));
+*/
+

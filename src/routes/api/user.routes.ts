@@ -1,34 +1,60 @@
-import { Response, Request, Router } from "express";
+import { Response, Router } from "express";
 import UserModel from "@models/user.models";
-import { IUser } from "@interfaces/user.i";
+import Logger from "@libs/logger";
+import Encrypt from "@libs/encyrpt";
+import { PrivReq as Request } from "middleware";
+import { Roles } from "@interfaces/user.i";
 const router = Router();
-router.get("/", (_req: Request, res: Response<IUser>) => {
-  UserModel.find({}, (err: any, users: IUser) => {
-    if (err) {
-      res.status(500).send(err);
-      return;
-    }
-    res.status(200).json(users);
-  });
+router.get("/", async (_req: Request, res: Response) => {
+  //this is where we get all the users;
+  const users = await UserModel.find();
+  res
+    .status(200)
+    .send({ msg: "users", users: users.map((user) => user.ToClient()) });
 });
-router.get("/:id", (req: Request, res: Response<IUser>) => {
-  UserModel.findById(req.params.id, (err: any, user: IUser) => {
-    if (err) {
-      res.status(500).send();
-      return;
-    }
-    res.status(200).json(user);
+
+router.get("/", async (req: Request, res: Response) => {
+  const creator = req.auth? req.auth.user: null;
+  //this is where we register a new user
+  const user = new UserModel(req.body.user);
+  const check = user.VerifySchema();
+  if (!check.success) {
+    Logger.warn("user model not valid");
+    Logger.warn(check.error);
+    res.status(400).send(check.error);
+    return;
+  }
+  //convert the creator role to a number
+  const creatorRole = creator ? Roles[creator.roles] : Roles.user;
+  if (creatorRole!==Roles.admin && creatorRole>= Roles[user.roles]) {
+    Logger.warn("role not authorized");
+    res.status(401).send({ msg: "role not authorized" });
+    return;
+  }
+  //check if the user name or the email alr exists
+  //if it does, return an error
+  const checkEmail = UserModel.findOne({ "login.email": user.login.email });
+  const checkUsername = UserModel.findOne({
+    "login.username": user.login.username,
   });
-});
-router.post("/", (req: Request, res: Response<IUser>) => {
-  const user = new UserModel(req.body);
-  //use the schema to validate the data before saving
-  user.save((err: any, user: IUser) => {
-    if (err) {
-      res.status(500).send(err);
-      return;
-    }
-    res.status(201).json(user);
-  });
+  const [email, username] = await Promise.all([checkEmail, checkUsername]);
+  if (email || username) {
+    Logger.warn("user already exists");
+    res.status(402).send({
+      msg: "user already exists",
+      err: {
+        email: email ? "email already exists" : undefined,
+        username: username ? "username already exists" : undefined,
+      },
+    });
+    return;
+  }
+  if (!user.createdAt) {
+    user.createdAt = new Date(Date.now());
+    user.status = "active";
+    user.login.passw = await Encrypt.hash(user.login.passw);
+  }
+  await user.save();
+  res.status(200).send({ msg: "user created", user: user.ToClient() });
 });
 export default router;
