@@ -1,22 +1,22 @@
 import { Response, Router } from "express";
-import UserModel from "@models/user.models";
+import UsersModel from "@models/users.models";
 import Logger from "@libs/logger";
-import Encrypt from "@libs/encyrpt";
-import { PrivReq as Request } from "middleware";
-import { Roles } from "@interfaces/user.i";
+import Encrypt from "@utils/encyrpt";
+import { PrivReq as Request } from "@utils/middleware";
+//import { Roles } from "@interfaces/primary/employee.i";
 const router = Router();
 router.get("/", async (_req: Request, res: Response) => {
   //this is where we get all the users;
-  const users = await UserModel.find();
+  const users = await UsersModel.find();
   res
     .status(200)
     .send({ msg: "users", users: users.map((user) => user.ToClient()) });
 });
 
 router.get("/", async (req: Request, res: Response) => {
-  const creator = req.auth? req.auth.user: null;
+  //const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
-  const user = new UserModel(req.body.user);
+  const user = new UsersModel(req.body.user);
   const check = user.VerifySchema();
   if (!check.success) {
     Logger.warn("user model not valid");
@@ -25,16 +25,16 @@ router.get("/", async (req: Request, res: Response) => {
     return;
   }
   //convert the creator role to a number
-  const creatorRole = creator ? Roles[creator.roles] : Roles.user;
+  /*const creatorRole = creator ? Roles[creator.roles] : Roles.user;
   if (creatorRole!==Roles.admin && creatorRole>= Roles[user.roles]) {
     Logger.warn("role not authorized");
     res.status(401).send({ msg: "role not authorized" });
     return;
-  }
+  }*/
   //check if the user name or the email alr exists
   //if it does, return an error
-  const checkEmail = UserModel.findOne({ "login.email": user.login.email });
-  const checkUsername = UserModel.findOne({
+  const checkEmail = UsersModel.findOne({ "login.email": user.login.email });
+  const checkUsername = UsersModel.findOne({
     "login.username": user.login.username,
   });
   const [email, username] = await Promise.all([checkEmail, checkUsername]);

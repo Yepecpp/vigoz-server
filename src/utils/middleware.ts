@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "@libs/jwt";
-import {IUser} from "@interfaces/user.i";
+import {IUser} from "@interfaces/primary/user.i";
 import Logger from "@libs/logger";
-import UserModel from "@models/user.models";
+import UserModel from "@models/users.models";
 export interface PrivReq extends Request {
   auth: {
     bearer: string | null;

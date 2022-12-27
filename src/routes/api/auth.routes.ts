@@ -1,9 +1,9 @@
 import { Response,  Router } from "express";
-import UserModel from "@models/user.models";
+import UserModel from "@models/users.models";
 import Logger from "@libs/logger";
-import Encrypt from "@libs/encyrpt";
+import Encrypt from "@utils/encyrpt";
 import jwt from "@libs/jwt";
-import { PrivReq as Request } from "middleware";
+import { PrivReq as Request } from "@utils/middleware";
 const router = Router();
 router.get("/login", async (req: Request, res: Response) => {
 // this is where we login a user

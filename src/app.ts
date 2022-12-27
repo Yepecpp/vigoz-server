@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import ApiRouter from "@api/api.routes";
-import Middleware from "./middleware";
+import Middleware from "@utils/middleware";
 //consts for express
 dotenv.config();
 const app = express();

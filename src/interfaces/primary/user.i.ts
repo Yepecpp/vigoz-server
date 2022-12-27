@@ -1,12 +1,7 @@
 import {Document} from "mongoose";
 import {z} from "zod"
-import { loginZod } from "./login.i";
-export enum Roles {
-    admin=0,
-    supervisor=1,
-    staff=2,
-    user=3
-}
+import { loginZod } from "../common/login.i";
+
 export const userZod = z.object({
     id : z.string().optional(),
     name : z.string(),
@@ -15,11 +10,14 @@ export const userZod = z.object({
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
     status: z.enum(["active", "inactive", "deleted"]).default("active"),
-    roles: z.enum(["admin","supervisor","staff", "user"]).default("user"),
     meta: z.any().nullish(),
-    info: z.any().nullish()
+    info: z.any().nullish(),
+    images: z.object({
+        images: z.array(z.string()).optional(),
+        avatar: z.string().optional(),
+        background: z.string().optional()
+    }).optional() // array of strings
 });   
-//export type IUser = z.infer<typeof userZod>;
 export type IUser = z.infer<typeof userZod>;
 export type userDocument = Document & IUser & {
     VerifySchema(): {success: boolean, error?: z.ZodError<IUser>, data?: IUser};
