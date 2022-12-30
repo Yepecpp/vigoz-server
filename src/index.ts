@@ -1,7 +1,7 @@
-import app from "./app";
-import Checkcon from "@libs/mongoose";
-import Logger from "@libs/logger";
-import SetUp from "@utils/SetUp";
+import app from './app';
+import Checkcon from '@libs/mongoose';
+import Logger from '@libs/logger';
+import SetUp from '@utils/SetUp';
 const port = process.env.PORT || 3000;
 Checkcon()
   .then(() => {

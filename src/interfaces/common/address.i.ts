@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 export const addressZod = z.object({
   street1: z.string(),
   street2: z.string().optional(),

@@ -1,7 +1,7 @@
-import { userZod, userDocument, IUser } from "@interfaces/primary/user.i";
-import { z } from "zod";
-import Logger from "@libs/logger";
-import mongoose from "mongoose";
+import { userZod, userDocument, IUser } from '@interfaces/primary/user.i';
+import { z } from 'zod';
+import Logger from '@libs/logger';
+import mongoose from 'mongoose';
 // create a mongoose schema
 let UsersSchema = new mongoose.Schema<userDocument>({
   name: { type: String, required: true },
@@ -14,12 +14,12 @@ let UsersSchema = new mongoose.Schema<userDocument>({
   meta: { type: Object, required: false },
   info: { type: Object, required: false },
 });
-UsersSchema.pre("save", function (next) {
+UsersSchema.pre('save', function (next) {
   if (!this.createdAt) {
     this.createdAt = new Date(Date.now());
   }
   this.updatedAt = new Date(Date.now());
-  Logger.info("UserSchema.pre save");
+  Logger.info('UserSchema.pre save');
   next();
 });
 
