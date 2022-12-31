@@ -10,5 +10,6 @@ export const branchZod = z.object({
   phone: z.string(),
   email: z.string(),
 });
+
 export type IBranch = z.infer<typeof branchZod>;
 export type branchDocument = IBranch & Document & {};

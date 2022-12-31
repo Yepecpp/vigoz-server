@@ -47,7 +47,7 @@ const CheckAdmin = async () => {
       username: 'admin',
       passw: await Encrypt.hash('admin'),
       email: 'admin@admin.com',
-      provider: 'email',
+      provider: 'local',
     },
     name: 'admin',
     last_name: 'admin',
@@ -92,7 +92,7 @@ const CheckEmployee = async (
   return;
 };
 const CheckBranch = async (id: mongoose.Types.ObjectId) => {
-  const Branch = await BranchesModel.findOne({name: 'admin'});
+  const Branch = await BranchesModel.findOne({ name: 'admin' });
   if (Branch) return Branch._id as mongoose.Types.ObjectId;
   const branch = new BranchesModel({
     name: 'admin',

@@ -5,32 +5,30 @@ import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
 //import { Roles } from "@interfaces/primary/employee.i";
 const router = Router();
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   //this is where we get all the users;
+  if (!req.auth) {
+    Logger.warn('no token provided on auth routes');
+    res.status(401).send({ msg: 'no token provided' });
+    return;
+  }
   const users = await UsersModel.find();
   res
     .status(200)
     .send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
 
-router.get('/', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   //const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
   const user = new UsersModel(req.body.user);
   const check = user.VerifySchema();
   if (!check.success) {
-    Logger.warn('user model not valid');
+    Logger.warn('user data is not valid');
     Logger.warn(check.error);
-    res.status(400).send(check.error);
+    res.status(400).send({ err: check.error, msg: 'user data is not valid' });
     return;
   }
-  //convert the creator role to a number
-  /*const creatorRole = creator ? Roles[creator.roles] : Roles.user;
-  if (creatorRole!==Roles.admin && creatorRole>= Roles[user.roles]) {
-    Logger.warn("role not authorized");
-    res.status(401).send({ msg: "role not authorized" });
-    return;
-  }*/
   //check if the user name or the email alr exists
   //if it does, return an error
   const checkEmail = UsersModel.findOne({ 'login.email': user.login.email });
@@ -56,5 +54,37 @@ router.get('/', async (req: Request, res: Response) => {
   }
   await user.save();
   res.status(200).send({ msg: 'user created', user: user.ToClient() });
+});
+router.put('/', async (req: Request, res: Response) => {
+  const user = await UsersModel.findById(req.body.user.id);
+  if (!user) {
+    Logger.warn("cant update this user beacuse it doesn't exists");
+    res.status(404).send({
+      msg: "cant update this user beacuse it doesn't exists",
+    });
+    return;
+  }
+  const newdata = req.body.user;
+  if (req.body.ChangePass === true) {
+    newdata.login.passw = await Encrypt.hash(newdata.login.passw);
+  } else {
+    newdata.login.passw = user.login.passw;
+  }
+  const check = user.VerifySchema(newdata);
+  if (!check.success) {
+    Logger.warn('Data is not well formated');
+    res
+      .status(400)
+      .send({ err: check.error, msg: 'Data is not well formated' });
+  }
+  user.login = newdata.login;
+  user.name = newdata.name;
+  user.last_name = newdata.last_name;
+  user.phone = newdata.phone;
+  user.status = newdata.status;
+  user.images = newdata.images;
+  user.info = newdata.info;
+  user.save();
+  res.status(200).send({ msg: 'user updated', user: user.ToClient() });
 });
 export default router;

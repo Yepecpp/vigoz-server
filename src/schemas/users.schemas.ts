@@ -8,6 +8,7 @@ let UsersSchema = new mongoose.Schema<userDocument>({
   last_name: { type: String, required: true },
   login: { type: Object, required: true },
   //make createdat inmutable
+  phone: { type: String, required: false },
   createdAt: { type: Date, required: false, immutable: true },
   updatedAt: { type: Date, required: false, default: Date.now },
   status: { type: String, required: true },
@@ -30,9 +31,12 @@ UsersSchema.methods.ToClient = function (): IUser {
     name: curr.name,
     last_name: curr.last_name,
     login: {
+      username: curr.login.username,
       email: curr.login.email,
       provider: curr.login.provider,
+      lastLogin: curr.login.lastLogin ? curr.login.lastLogin : null,
     },
+    phone: curr?.phone,
     createdAt: curr.createdAt,
     updatedAt: curr.updatedAt,
     status: curr.status,
@@ -41,12 +45,15 @@ UsersSchema.methods.ToClient = function (): IUser {
   return user;
 };
 
-UsersSchema.methods.VerifySchema = function (): {
+UsersSchema.methods.VerifySchema = function (Udata?: IUser | userDocument): {
   success: boolean;
   error?: z.ZodError<IUser>;
   data?: IUser;
 } {
-  let parse = userZod.safeParse(this);
+  if (!Udata) {
+    Udata = this;
+  }
+  let parse = userZod.safeParse(Udata);
   if (!parse.success) {
     return { success: false, error: parse.error };
   }

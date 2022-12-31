@@ -45,6 +45,8 @@ router.post('/login', async (req: Request, res: Response) => {
     return;
   }
   const token = jwt.sign({ id: user._id });
+  user.login.lastLogin = new Date(Date.now());
+  await user.save();
   res
     .status(200)
     .send({ msg: 'user logged in', token: token, user: user.ToClient() });
@@ -54,29 +56,19 @@ router.get('/', async (req: Request, res: Response) => {
   // we get the token from the request header
   // we verify the token
   // if it is valid, we send back the user data
-  const token = req.auth?.bearer;
-  if (!token) {
+  if (!req.auth) {
     Logger.warn('no token provided on auth routes');
     res.status(400).send({ msg: 'no token provided' });
     return;
   }
-  const decoded: any = jwt.verify(token);
-  if (decoded.status.isValid !== true) {
-    Logger.warn('invalid token');
-    res.status(401).send({ msg: 'invalid token' });
-    return;
-  }
-  const user = await UserModel.findById(decoded.data.id);
-  if (!user) {
-    Logger.warn('user not found');
-    res.status(404).send({ msg: 'user not found' });
-    return;
-  }
+  const { bearer, user } = req.auth;
   if (user.status !== 'active') {
     Logger.warn('user not active');
     res.status(401).send({ msg: 'user not active' });
     return;
   }
-  res.status(200).send({ msg: 'user found', token, user: user.ToClient() });
+  res
+    .status(200)
+    .send({ msg: 'user found', token: bearer, user: user.ToClient() });
 });
 export default router;

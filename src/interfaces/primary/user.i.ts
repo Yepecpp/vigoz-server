@@ -10,6 +10,7 @@ export const userZod = z.object({
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   status: z.enum(['active', 'inactive', 'deleted']).default('active'),
+  phone: z.string().optional(),
   meta: z.any().nullish(),
   info: z.any().nullish(),
   images: z
@@ -23,7 +24,7 @@ export const userZod = z.object({
 export type IUser = z.infer<typeof userZod>;
 export type userDocument = Document &
   IUser & {
-    VerifySchema(): {
+    VerifySchema(Udata?: IUser | userDocument): {
       success: boolean;
       error?: z.ZodError<IUser>;
       data?: IUser;
