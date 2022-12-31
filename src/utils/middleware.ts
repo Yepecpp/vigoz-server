@@ -34,8 +34,9 @@ const Middleware = {
     const token = (
       req.headers.authorization ? (req.headers.authorization as string) : null
     )?.split(' ')[1];
+    console.log(token);
     if (!token) {
-      Logger.warn('no token provided middle');
+      Logger.warn('no token provided on middle');
       req.auth = null;
       next();
       return;
@@ -43,13 +44,13 @@ const Middleware = {
 
     const decoded: any = jwt.verify(token);
     if (decoded.status.isExpired === true) {
-      Logger.warn('token expirado');
+      Logger.warn('token expirado en middle');
       req.auth = null;
       next();
       return;
     }
     if (decoded.status.isValid !== true) {
-      Logger.warn('token alterado');
+      Logger.warn('token alterado en middle');
       req.auth = null;
       next();
       return;

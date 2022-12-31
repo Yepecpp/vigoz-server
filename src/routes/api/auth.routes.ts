@@ -56,7 +56,7 @@ router.get('/', async (req: Request, res: Response) => {
   // if it is valid, we send back the user data
   const token = req.auth?.bearer;
   if (!token) {
-    Logger.warn('no token provided');
+    Logger.warn('no token provided on auth routes');
     res.status(400).send({ msg: 'no token provided' });
     return;
   }
