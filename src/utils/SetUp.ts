@@ -92,7 +92,7 @@ const CheckEmployee = async (
   return;
 };
 const CheckBranch = async (id: mongoose.Types.ObjectId) => {
-  const Branch = await BranchesModel.findOne({});
+  const Branch = await BranchesModel.findOne({name: 'admin'});
   if (Branch) return Branch._id as mongoose.Types.ObjectId;
   const branch = new BranchesModel({
     name: 'admin',
