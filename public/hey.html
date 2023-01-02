@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 class="bueno">eso esta super gvi, no?</h1>
+    <p>Bueno, Bueno, bueno.</p>
+    <button id="boba">Click me</button>
+    <script>
+        const boba = document.getElementById('boba');
+        boba.addEventListener('click', () => {
+            //redirect to pornhub
+            window.location.href = 'https://www.pornhub.com/';
+        });
+    </script>
+    <style>
+        .bueno {
+            color: green;
+        }
+
+        h1,
+        p {
+            font: 6rem sans-serif;
+        }
+
+        #boba {
+            font: 2rem sans-serif;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+    </style>
+</body>
+
+</html>

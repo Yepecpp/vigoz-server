@@ -35,8 +35,11 @@ const Middleware = {
     const token = (
       req.headers.authorization ? (req.headers.authorization as string) : null
     )?.split(' ')[1];
+    let ip = req.headers['x-forwarded-for'];
+    ip = Array.isArray(ip) ? ip[0] : ip;
+    ip = ip ? ip.split(',')[0] : undefined;
     if (!token) {
-      Logger.warn('no token provided on middle');
+      Logger.warn('no token provided on middle', ip);
       req.auth = null;
       next();
       return;
@@ -44,13 +47,13 @@ const Middleware = {
 
     const decoded: any = jwt.verify(token);
     if (decoded.status.isExpired === true) {
-      Logger.warn('token expirado en middle');
+      Logger.warn('token expirado en middle', ip);
       req.auth = null;
       next();
       return;
     }
     if (decoded.status.isValid !== true) {
-      Logger.warn('token alterado en middle');
+      Logger.warn('token alterado en middle', ip);
       req.auth = null;
       next();
       return;

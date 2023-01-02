@@ -17,6 +17,9 @@ app.get('/', (_req: Request, res: Response) => {
   res.send('Hello World!');
 });
 app.use(Middleware.VerifyToken);
+app.get('/hey', (_req, res) => {
+  res.sendFile('/public/hey.html', { root: __dirname + '/..' });
+});
 app.use('/api/v1', ApiRouter);
 //error handling
 app.use(Middleware.NotFound);
