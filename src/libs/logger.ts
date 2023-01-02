@@ -37,13 +37,13 @@ const ChalkFormat = (info: ChalkFormat): String => {
   const logLine = `[${date.toLocaleString()}]${
     info.ip ? ' -IP: ' + info.ip + '- ' : ''
   } ${info.message}`;
-  const logdate = `${date.getFullYear()}-${date.getMonth()}`;
+  const logdate = `${date.getFullYear()}-${date.getMonth() + 1}`;
   if (!fs.existsSync(`${logDir}/${logdate}`)) {
     fs.mkdirSync(`${logDir}/${logdate}`);
   }
   //append to file
   fs.appendFileSync(
-    `${logDir}/${logdate}/${date.getDay()}.log`,
+    `${logDir}/${logdate}/${date.getDay() + 1}.log`,
     logLine + '\n',
     {
       encoding: 'utf8',
