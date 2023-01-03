@@ -64,6 +64,8 @@ router.get('/', async (req: Request, res: Response) => {
     is_employee: user.is_employee,
   });
 });
+/*router.put('/forgot-password', async (req: Request, res: Response) => {
 
+});*/
 export default router;
 
