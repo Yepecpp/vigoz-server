@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { z } from 'zod';
 import { loginZod } from '../common/login.i';
-
+import zoderr from '@utils/zoderr';
 export const userZod = z.object({
   id: z.string().optional(),
   name: z.string(),
@@ -20,13 +20,15 @@ export const userZod = z.object({
       background: z.string().optional(),
     })
     .optional(), // array of strings
+  is_verified: z.boolean().default(false),
+  is_employee: z.boolean().default(false),
 });
 export type IUser = z.infer<typeof userZod>;
 export type userDocument = Document &
   IUser & {
     VerifySchema(Udata?: IUser | userDocument): {
       success: boolean;
-      error?: z.ZodError<IUser>;
+      error?: ReturnType<typeof zoderr>;
       data?: IUser;
     };
     ToClient(): IUser;

@@ -3,16 +3,22 @@ import UsersModel from '@models/users.models';
 import Logger from '@libs/logger';
 import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
-//import { Roles } from "@interfaces/primary/employee.i";
 const router = Router();
 router.get('/', async (req: Request, res: Response) => {
+  const query = req.query;
   //this is where we get all the users;
   if (!req.auth) {
-    Logger.warn('no token provided on auth routes');
     res.status(401).send({ msg: 'no token provided' });
     return;
   }
-  const users = await UsersModel.find();
+  if (!req.auth.role || !req.auth.employee) {
+    Logger.warn('not authorized', req.logData);
+    console.log(req.auth);
+
+    res.status(401).send({ msg: 'not authorized' });
+    return;
+  }
+  const users = await UsersModel.find(query ? query : {});
   res
     .status(200)
     .send({ msg: 'users', users: users.map((user) => user.ToClient()) });
