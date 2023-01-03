@@ -8,4 +8,5 @@ export const departmentsSchema = new mongoose.Schema<departmentDocument>({
     ref: 'branches',
     required: true,
   },
+  phone: { type: String, required: false },
 });

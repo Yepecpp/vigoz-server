@@ -1,6 +1,5 @@
 import { userZod, userDocument, IUser } from '@interfaces/primary/user.i';
-import { z } from 'zod';
-import Logger from '@libs/logger';
+import zoderr from '@utils/zoderr';
 import mongoose from 'mongoose';
 // create a mongoose schema
 let UsersSchema = new mongoose.Schema<userDocument>({
@@ -9,20 +8,27 @@ let UsersSchema = new mongoose.Schema<userDocument>({
   login: { type: Object, required: true },
   //make createdat inmutable
   phone: { type: String, required: false },
-  createdAt: { type: Date, required: false, immutable: true },
+  createdAt: {
+    type: Date,
+    required: true,
+    immutable: true,
+    default: Date.now,
+  },
   updatedAt: { type: Date, required: false, default: Date.now },
   status: { type: String, required: true },
   meta: { type: Object, required: false },
   info: { type: Object, required: false },
+  is_employee: { type: Boolean, default: false, required: false },
+  is_verified: { type: Boolean, default: false, required: false },
 });
-UsersSchema.pre('save', function (next) {
+/*UsersSchema.pre('save', function (next) {
   if (!this.createdAt) {
     this.createdAt = new Date(Date.now());
   }
   this.updatedAt = new Date(Date.now());
   Logger.info('UserSchema.pre save');
   next();
-});
+});*/
 
 UsersSchema.methods.ToClient = function (): IUser {
   const curr = this as userDocument;
@@ -36,6 +42,8 @@ UsersSchema.methods.ToClient = function (): IUser {
       provider: curr.login.provider,
       lastLogin: curr.login.lastLogin ? curr.login.lastLogin : null,
     },
+    is_verified: curr.is_verified,
+    is_employee: curr.is_employee,
     phone: curr?.phone,
     createdAt: curr.createdAt,
     updatedAt: curr.updatedAt,
@@ -47,7 +55,7 @@ UsersSchema.methods.ToClient = function (): IUser {
 
 UsersSchema.methods.VerifySchema = function (Udata?: IUser | userDocument): {
   success: boolean;
-  error?: z.ZodError<IUser>;
+  err?: ReturnType<typeof zoderr>;
   data?: IUser;
 } {
   if (!Udata) {
@@ -55,7 +63,7 @@ UsersSchema.methods.VerifySchema = function (Udata?: IUser | userDocument): {
   }
   let parse = userZod.safeParse(Udata);
   if (!parse.success) {
-    return { success: false, error: parse.error };
+    return { success: false, err: zoderr(parse.error) };
   }
   return { success: true, data: parse.data };
 };

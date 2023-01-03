@@ -1,5 +1,11 @@
-import { employeeDocument } from '@interfaces/primary/employee.i';
+import {
+  employeeDocument,
+  employeeZod,
+  IEmployee,
+} from '@interfaces/primary/employee.i';
 import mongoose from 'mongoose';
+import zoderr from '@utils/zoderr';
+import usersModel from '@models/users.models';
 export const employeesSchema = new mongoose.Schema<employeeDocument>({
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'departments' },
   salary: { type: Object, required: true },
@@ -7,4 +13,41 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
   address: { type: Object, required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
   role: { type: String, required: true },
+});
+employeesSchema.methods.ToClient = function () {
+  const curr = this as employeeDocument;
+  const employee = {
+    id: curr._id.toString(),
+    department: curr.department,
+    salary: curr.salary,
+    identity: curr.identity,
+    address: curr.address,
+    user: curr.user,
+    role: curr.role,
+  };
+  return employee;
+};
+employeesSchema.methods.VerifySchema = function (Udata?: IEmployee): {
+  success: boolean;
+  err?: ReturnType<typeof zoderr>;
+  data?: IEmployee;
+} {
+  Udata = Udata ? Udata : (this as IEmployee);
+  const parse = employeeZod.safeParse(Udata);
+  if (parse.success) {
+    return {
+      success: true,
+      data: parse.data,
+    };
+  }
+  return {
+    success: false,
+    err: zoderr(parse),
+  };
+};
+employeesSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    await usersModel.findByIdAndUpdate(this.user, { is_employee: true });
+  }
+  next();
 });

@@ -58,17 +58,16 @@ router.get('/', async (req: Request, res: Response) => {
   // if it is valid, we send back the user data
   if (!req.auth) {
     Logger.warn('no token provided on auth routes');
-    res.status(400).send({ msg: 'no token provided' });
+    res.status(401).send({ msg: 'no token provided' });
     return;
   }
   const { bearer, user } = req.auth;
-  if (user.status !== 'active') {
-    Logger.warn('user not active');
-    res.status(401).send({ msg: 'user not active' });
-    return;
-  }
-  res
-    .status(200)
-    .send({ msg: 'user found', token: bearer, user: user.ToClient() });
+
+  res.status(200).send({
+    msg: 'user found',
+    token: bearer,
+    user: user.ToClient(),
+    is_employee: user.is_employee,
+  });
 });
 export default router;

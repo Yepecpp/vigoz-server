@@ -9,7 +9,6 @@ interface ITokenP {
 }
 export default class jwt {
   static sign(payload: any) {
-    // console.log(payload)
     return JWT.sign(
       payload,
       secret as JWT.Secret,
@@ -25,7 +24,6 @@ export default class jwt {
       };
     } catch (err) {
       //q: if the jwt is invalid, which error does it throws?
-      console.log(err);
       if (err.name === 'TokenExpiredError') {
         return { data: null, status: { isValid: false, isExpired: true } };
       } else {
