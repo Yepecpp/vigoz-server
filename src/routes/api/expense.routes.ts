@@ -15,9 +15,7 @@ router.get('/expense', async (req: Request, res: Response) => {
 
   const users = await UserModel.find();
 
-  res
-    .status(200)
-    .send({ msg: 'users', users: users.map((user) => user.ToClient()) });
+  res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
 
 router.post('/', async (req: Request, res: Response) => {
@@ -28,9 +26,7 @@ router.post('/', async (req: Request, res: Response) => {
   if (!check.success) {
     Logger.warn('Expensive data is not valid');
     Logger.warn(check.error);
-    res
-      .status(400)
-      .send({ err: check.error, msg: 'Expensive data is not valid' });
+    res.status(400).send({ err: check.error, msg: 'Expensive data is not valid' });
     return;
   }
   //await expense.save();

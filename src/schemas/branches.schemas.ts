@@ -1,5 +1,6 @@
 import { branchDocument } from '@interfaces/primary/branch.i';
 import mongoose from 'mongoose';
+
 export const branchesSchema = new mongoose.Schema<branchDocument>({
   name: { type: String, required: true },
   address: { type: Object, required: true },

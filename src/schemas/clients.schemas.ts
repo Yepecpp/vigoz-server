@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
-import {
-  IClient,
-  clientDocument,
-  clientZod,
-} from '@interfaces/primary/client.i';
+import { IClient, clientDocument, clientZod } from '@interfaces/primary/client.i';
 export const clientsSchema = new mongoose.Schema<clientDocument>({
   name: { type: String, required: true },
   address: { type: Object, required: true },

@@ -1,8 +1,4 @@
-import {
-  employeeDocument,
-  employeeZod,
-  IEmployee,
-} from '@interfaces/primary/employee.i';
+import { employeeDocument, employeeZod, IEmployee } from '@interfaces/primary/employee.i';
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 import usersModel from '@models/users.models';

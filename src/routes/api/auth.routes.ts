@@ -23,10 +23,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
   // data.username could be an email or a username
   const user = await UserModel.findOne({
-    $or: [
-      { 'login.username': data.username },
-      { 'login.email': data.username },
-    ],
+    $or: [{ 'login.username': data.username }, { 'login.email': data.username }],
   });
   if (!user) {
     Logger.warn('user not found');
@@ -47,9 +44,7 @@ router.post('/login', async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user._id });
   user.login.lastLogin = new Date(Date.now());
   await user.save();
-  res
-    .status(200)
-    .send({ msg: 'user logged in', token: token, user: user.ToClient() });
+  res.status(200).send({ msg: 'user logged in', token: token, user: user.ToClient() });
 });
 router.get('/', async (req: Request, res: Response) => {
   // this is where we get the user data

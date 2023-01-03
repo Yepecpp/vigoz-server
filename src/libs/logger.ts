@@ -1,8 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs';
-const logDir = fs.existsSync(__dirname + '/../../logs')
-  ? __dirname + '/../../logs'
-  : undefined;
+const logDir = fs.existsSync(__dirname + '/../../logs') ? __dirname + '/../../logs' : undefined;
 console.log(logDir ? `Logging to ${logDir}` : 'Logging disabled');
 export default class Logger {
   static info(message: any, reqData?: { ip?: string | string[]; url: string }) {
@@ -10,23 +8,13 @@ export default class Logger {
     console.log(ChalkFormat({ reqData, message, status: chalk.blue('INFO') }));
   }
   static warn(message: any, reqData?: { ip?: string | string[]; url: string }) {
-    console.log(
-      ChalkFormat({ reqData, message, status: chalk.yellow('WARN') })
-    );
+    console.log(ChalkFormat({ reqData, message, status: chalk.yellow('WARN') }));
   }
-  static error(
-    message: any,
-    reqData?: { ip?: string | string[]; url: string }
-  ) {
+  static error(message: any, reqData?: { ip?: string | string[]; url: string }) {
     console.log(ChalkFormat({ reqData, message, status: chalk.red('ERROR') }));
   }
-  static success(
-    message: any,
-    reqData?: { ip?: string | string[]; url: string }
-  ) {
-    console.log(
-      ChalkFormat({ reqData, message, status: chalk.green('SUCCESS') })
-    );
+  static success(message: any, reqData?: { ip?: string | string[]; url: string }) {
+    console.log(ChalkFormat({ reqData, message, status: chalk.green('SUCCESS') }));
   }
   static log(message: any, reqData?: { ip?: string | string[]; url: string }) {
     console.log(ChalkFormat({ reqData, message, status: chalk.white('LOG') }));
@@ -46,9 +34,7 @@ const ChalkFormat = (info: ChalkFormat): String => {
   }
   const line = `[${date.toLocaleString()}]${
     info.reqData?.ip ? chalk.blue(' -IP: ') + info.reqData.ip + '- ' : ''
-  } ${info.status} ${info.message} ${
-    info.reqData?.url ? 'on url: ' + info.reqData?.url : ''
-  }`;
+  } ${info.status} ${info.message} ${info.reqData?.url ? 'on url: ' + info.reqData?.url : ''}`;
   if (!logDir) return line;
   const logLine = `[${date.toLocaleString()}]${
     info.reqData?.ip ? ' -IP: ' + info.reqData.ip + '- ' : ''
@@ -68,7 +54,7 @@ const ChalkFormat = (info: ChalkFormat): String => {
         console.log(err);
         process.exit(1);
       }
-    }
+    },
   );
   return line;
 };

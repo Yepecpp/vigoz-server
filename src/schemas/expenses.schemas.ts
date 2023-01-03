@@ -1,8 +1,4 @@
-import {
-  expenseDocument,
-  expenseZod,
-  IExpense,
-} from '@interfaces/primary/expense.i';
+import { expenseDocument, expenseZod, IExpense } from '@interfaces/primary/expense.i';
 import { z } from 'zod';
 import mongoose from 'mongoose';
 
@@ -12,12 +8,11 @@ export const expensesSchema = new mongoose.Schema<expenseDocument>({
   amount: { type: Object, required: true },
   date_ex: { type: Date, required: true },
   state: { type: Boolean, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  empReq: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: true },
+  empTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: false },
 });
 
-expensesSchema.methods.VerifySchema = function (
-  Edata?: IExpense | expenseDocument
-): {
+expensesSchema.methods.VerifySchema = function (Edata?: IExpense | expenseDocument): {
   success: boolean;
   error?: z.ZodError<IExpense>;
   data?: IExpense;

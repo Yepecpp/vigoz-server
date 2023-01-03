@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { userZod } from './user.i';
+import { employeeZod } from './employee.i';
 import { Document } from 'mongoose';
 import { currencyZod } from '@interfaces/common/currency.i';
-
+import zoderr from '@utils/zoderr';
 export const expenseZod = z.object({
   id: z.string().optional(),
   category: z.string(),
@@ -13,7 +13,8 @@ export const expenseZod = z.object({
   }),
   date_ex: z.date(),
   state: z.boolean(),
-  user: userZod.optional(),
+  empReq: employeeZod || z.string(),
+  empTo: employeeZod || z.string().optional(),
 });
 
 export type IExpense = z.infer<typeof expenseZod>;
@@ -21,8 +22,7 @@ export type expenseDocument = IExpense &
   Document & {
     VerifySchema(Edata?: IExpense | expenseDocument): {
       success: boolean;
-      error?: z.ZodError<IExpense>;
+      error?: ReturnType<typeof zoderr>;
       data?: IExpense;
     };
-    ToClient(): IExpense;
   };

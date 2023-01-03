@@ -29,21 +29,16 @@ const Middleware = {
     const err: Err = { msg: `Not Found - ${req.originalUrl}`, status: 404 };
     next(err);
   },
-  ErrorHandler: (
-    err: Err,
-    __: PrivReq,
-    res: Response<Err>,
-    _: NextFunction
-  ) => {
+  ErrorHandler: (err: Err, __: PrivReq, res: Response<Err>, _: NextFunction) => {
     err = err as Err;
     res.status(err.status || 500).send(err);
     return;
   },
   VerifyToken: async (req: PrivReq, _: Response, next: NextFunction) => {
     //remove Bearer from token
-    const token = (
-      req.headers.authorization ? (req.headers.authorization as string) : null
-    )?.split(' ')[1];
+    const token = (req.headers.authorization ? (req.headers.authorization as string) : null)?.split(
+      ' ',
+    )[1];
     // set the log data to the request
     req.logData = {
       ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
@@ -84,9 +79,7 @@ const Middleware = {
       return;
     }
     if (user.is_employee) {
-      const employee = await employeesModel
-        .findOne({ user: user._id })
-        .populate('department');
+      const employee = await employeesModel.findOne({ user: user._id }).populate('department');
       if (!employee) {
         const err: Err = { msg: 'employee not found', status: 401 };
         req.auth = null;

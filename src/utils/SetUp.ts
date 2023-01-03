@@ -58,10 +58,7 @@ const CheckAdmin = async () => {
   Logger.info('Admin created');
   return admin._id as mongoose.Types.ObjectId;
 };
-const CheckEmployee = async (
-  id: mongoose.Types.ObjectId,
-  depid: mongoose.Types.ObjectId
-) => {
+const CheckEmployee = async (id: mongoose.Types.ObjectId, depid: mongoose.Types.ObjectId) => {
   const Employee = await EmployeesModel.findOne({});
   if (Employee) return;
   const employee = new EmployeesModel({

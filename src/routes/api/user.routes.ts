@@ -19,9 +19,7 @@ router.get('/', async (req: Request, res: Response) => {
     return;
   }
   const users = await UsersModel.find(query ? query : {});
-  res
-    .status(200)
-    .send({ msg: 'users', users: users.map((user) => user.ToClient()) });
+  res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
 
 router.post('/', async (req: Request, res: Response) => {
@@ -79,9 +77,7 @@ router.put('/', async (req: Request, res: Response) => {
   const check = user.VerifySchema(newdata);
   if (!check.success) {
     Logger.warn('Data is not well formated');
-    res
-      .status(400)
-      .send({ err: check.error, msg: 'Data is not well formated' });
+    res.status(400).send({ err: check.error, msg: 'Data is not well formated' });
   }
   user.login = newdata.login;
   user.name = newdata.name;
