@@ -6,7 +6,6 @@ let UsersSchema = new mongoose.Schema<userDocument>({
   name: { type: String, required: true },
   last_name: { type: String, required: true },
   login: { type: Object, required: true },
-  //make createdat inmutable
   phone: { type: String, required: false },
   createdAt: {
     type: Date,
@@ -69,3 +68,4 @@ UsersSchema.methods.VerifySchema = function (Udata?: IUser | userDocument): {
 };
 // export the schema
 export default UsersSchema;
+

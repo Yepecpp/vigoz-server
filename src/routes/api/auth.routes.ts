@@ -53,7 +53,7 @@ router.get('/', async (req: Request, res: Response) => {
   // if it is valid, we send back the user data
   if (!req.auth) {
     Logger.warn('no token provided on auth routes');
-    res.status(401).send({ msg: 'no token provided' });
+    res.status(401).send({ msg: 'no token provided or token is invalid' });
     return;
   }
   const { bearer, user } = req.auth;
@@ -66,3 +66,4 @@ router.get('/', async (req: Request, res: Response) => {
   });
 });
 export default router;
+

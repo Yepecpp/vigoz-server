@@ -1,7 +1,7 @@
 import { Response, Router } from 'express';
-import userRoutes from './user.routes';
+import userRoutes from './users.routes';
 import authRoutes from './auth.routes';
-import expenseRoutes from './expense.routes';
+import expenseRoutes from './expenses.routes';
 
 const router = Router();
 router.get('/', (_, res: Response) => {
@@ -13,3 +13,4 @@ router.use('/auth', authRoutes);
 router.use('/expense', expenseRoutes);
 
 export default router;
+
