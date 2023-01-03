@@ -6,12 +6,14 @@ import { PrivReq as Request } from '@utils/middleware';
 import Middleware from '@utils/middleware';
 const router = Router();
 router.get('/', Middleware.PrivateRoute, async (req: Request, res: Response) => {
-  if (!req.auth?.role || req.auth.role > 1) {
+  if (req.auth?.role === undefined || req.auth.role > 1) {
     Logger.warn('no permission to access this route');
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
-  const query = req.query;
+  let query = req.query as any;
+  if (query?.login?.passw) delete query.login.passw;
+  console.log(query);
   const users = await UsersModel.find(query ? query : {});
   res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
@@ -72,11 +74,7 @@ router.put('/', async (req: Request, res: Response) => {
     return;
   }
   const newdata = req.body.user;
-  if (req.body.ChangePass === true) {
-    newdata.login.passw = await Encrypt.hash(newdata.login.passw);
-  } else {
-    newdata.login.passw = user.login.passw;
-  }
+  newdata.login.passw = user.login.passw;
   const check = user.VerifySchema(newdata);
   if (!check.success) {
     Logger.warn('Data is not well formated');

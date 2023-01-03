@@ -66,6 +66,5 @@ UsersSchema.methods.VerifySchema = function (Udata?: IUser | userDocument): {
   }
   return { success: true, data: parse.data };
 };
-// export the schema
 export default UsersSchema;
 

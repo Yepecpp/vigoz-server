@@ -57,7 +57,6 @@ router.get('/', async (req: Request, res: Response) => {
     return;
   }
   const { bearer, user } = req.auth;
-
   res.status(200).send({
     msg: 'user found',
     token: bearer,
@@ -65,5 +64,6 @@ router.get('/', async (req: Request, res: Response) => {
     is_employee: user.is_employee,
   });
 });
+
 export default router;
 

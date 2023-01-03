@@ -106,13 +106,14 @@ const Middleware = {
       next(err);
       return;
     }
-    if (!req.auth.role || !req.auth.employee) {
-      const err: Err = { msg: 'no employee found', status: 401 };
-      Logger.warn('no employee found', req.logData);
-      Logger.warn({ role: req.auth.role, emp: req.auth.employee }, req.logData);
+    // if req.auth.role or req.auth.employee is null, then the user is not an employee
+    if (req.auth.role === undefined || !req.auth.employee) {
+      const err: Err = { msg: 'user is not an employee', status: 401 };
+      console.log({ hey: !req.auth.role, ha: !req.auth.employee });
       next(err);
       return;
     }
+
     next();
     return;
   },
