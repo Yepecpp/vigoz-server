@@ -1,6 +1,6 @@
 import { expenseDocument, expenseZod, IExpense } from '@interfaces/primary/expense.i';
-import { z } from 'zod';
 import mongoose from 'mongoose';
+import zoderr from '@utils/zoderr';
 
 export const expensesSchema = new mongoose.Schema<expenseDocument>({
   category: { type: String, required: true },
@@ -14,15 +14,31 @@ export const expensesSchema = new mongoose.Schema<expenseDocument>({
 
 expensesSchema.methods.VerifySchema = function (Edata?: IExpense | expenseDocument): {
   success: boolean;
-  error?: z.ZodError<IExpense>;
+  err?: ReturnType<typeof zoderr>;
   data?: IExpense;
 } {
   if (!Edata) {
     Edata = this;
   }
   let parse = expenseZod.safeParse(Edata);
+  console.log(parse);
   if (!parse.success) {
-    return { success: false, error: parse.error };
+    return { success: false, err: zoderr(parse.error) };
   }
   return { success: true, data: parse.data };
+};
+
+expensesSchema.methods.ToClient = function (): IExpense {
+  const curr = this as expenseDocument;
+  const expense = {
+    id: curr._id.toString(),
+    category: curr.category,
+    description: curr.description,
+    amount: curr.amount,
+    date_ex: curr.date_ex,
+    state: curr.state,
+    empReq: curr.empReq,
+    empTo: curr.empTo,
+  };
+  return expense;
 };

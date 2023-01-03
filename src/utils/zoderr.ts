@@ -9,9 +9,10 @@ interface parseZ_err {
   where: string;
   isReq: boolean;
 }
+
 const zoderr = (errs: any): parseZ_err[] => {
   let result: parseZ_err[] = [];
-  errs.map((err: any) => {
+  errs.errors.map((err: any) => {
     result.push({
       code: err.code,
       err: {

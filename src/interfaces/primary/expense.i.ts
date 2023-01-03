@@ -22,7 +22,8 @@ export type expenseDocument = IExpense &
   Document & {
     VerifySchema(Edata?: IExpense | expenseDocument): {
       success: boolean;
-      error?: ReturnType<typeof zoderr>;
+      err?: ReturnType<typeof zoderr>;
       data?: IExpense;
     };
+    ToClient(): IExpense;
   };
