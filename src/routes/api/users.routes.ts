@@ -3,25 +3,20 @@ import UsersModel from '@models/users.models';
 import Logger from '@libs/logger';
 import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
+import Middleware from '@utils/middleware';
 const router = Router();
-router.get('/', async (req: Request, res: Response) => {
-  const query = req.query;
-  //this is where we get all the users;
-  if (!req.auth) {
-    res.status(401).send({ msg: 'no token provided' });
+router.get('/', Middleware.PrivateRoute, async (req: Request, res: Response) => {
+  if (req.auth?.role === undefined || req.auth.role > 1) {
+    Logger.warn('no permission to access this route');
+    res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
-  if (!req.auth.role || !req.auth.employee) {
-    Logger.warn('not authorized', req.logData);
-    console.log(req.auth);
-
-    res.status(401).send({ msg: 'not authorized' });
-    return;
-  }
+  let query = req.query as any;
+  if (query?.login?.passw) delete query.login.passw;
+  console.log(query);
   const users = await UsersModel.find(query ? query : {});
   res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
-
 router.post('/', async (req: Request, res: Response) => {
   //const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
@@ -60,6 +55,16 @@ router.post('/', async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'user created', user: user.ToClient() });
 });
 router.put('/', async (req: Request, res: Response) => {
+  if (!req.body.user.id) {
+    Logger.warn('no id provided');
+    res.status(400).send({ msg: 'no id provided' });
+    return;
+  }
+  if (req.auth?.user._id.toString() !== req.body.user.id || req.auth?.role !== 0) {
+    Logger.warn('you are not allowed to update this user');
+    res.status(401).send({ msg: 'you are not allowed to update this user' });
+    return;
+  }
   const user = await UsersModel.findById(req.body.user.id);
   if (!user) {
     Logger.warn("cant update this user beacuse it doesn't exists");
@@ -69,11 +74,7 @@ router.put('/', async (req: Request, res: Response) => {
     return;
   }
   const newdata = req.body.user;
-  if (req.body.ChangePass === true) {
-    newdata.login.passw = await Encrypt.hash(newdata.login.passw);
-  } else {
-    newdata.login.passw = user.login.passw;
-  }
+  newdata.login.passw = user.login.passw;
   const check = user.VerifySchema(newdata);
   if (!check.success) {
     Logger.warn('Data is not well formated');
@@ -90,3 +91,34 @@ router.put('/', async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'user updated', user: user.ToClient() });
 });
 export default router;
+
+router.delete('/', async (req: Request, res: Response) => {
+  if (!req.body.user.id) {
+    Logger.warn('no id provided');
+    res.status(400).send({ msg: 'no id provided' });
+    return;
+  }
+  if (!req.auth) {
+    Logger.warn('you need to sign in to modify this user');
+    res.status(401).send({ msg: 'you need to sign in to modify this user ' + req.body.user.id });
+    return;
+  }
+  if (req.auth.user._id.toString() !== req.body.user.id || req.auth.role !== 0) {
+    Logger.warn('you are not allowed to delete this user');
+    res.status(401).send({ msg: 'you are not allowed to delete this user' });
+    return;
+  }
+  const user = await UsersModel.findById(req.body.user.id);
+  if (!user) {
+    Logger.warn("cant delete this user beacuse it doesn't exists");
+    res.status(404).send({
+      msg: "cant delete this user beacuse it doesn't exists",
+    });
+    return;
+  }
+  user.status = 'deleted';
+  user.save();
+  res.status(200).send({ msg: 'user deleted', user: user.ToClient() });
+  return;
+});
+

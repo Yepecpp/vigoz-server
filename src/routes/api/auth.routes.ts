@@ -53,11 +53,10 @@ router.get('/', async (req: Request, res: Response) => {
   // if it is valid, we send back the user data
   if (!req.auth) {
     Logger.warn('no token provided on auth routes');
-    res.status(401).send({ msg: 'no token provided' });
+    res.status(401).send({ msg: 'no token provided or token is invalid' });
     return;
   }
   const { bearer, user } = req.auth;
-
   res.status(200).send({
     msg: 'user found',
     token: bearer,
@@ -65,4 +64,8 @@ router.get('/', async (req: Request, res: Response) => {
     is_employee: user.is_employee,
   });
 });
+/*router.put('/forgot-password', async (req: Request, res: Response) => {
+
+});*/
 export default router;
+

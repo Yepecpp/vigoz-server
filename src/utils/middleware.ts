@@ -10,7 +10,7 @@ export interface PrivReq extends Request {
   auth: {
     bearer: string;
     employee?: employeeDocument;
-    role?: Roles;
+    role?: Roles | Number;
     user: userDocument;
   } | null;
   logData: {
@@ -100,5 +100,23 @@ const Middleware = {
     next();
     return;
   },
+  PrivateRoute: (req: PrivReq, _: Response, next: NextFunction) => {
+    if (!req.auth) {
+      const err: Err = { msg: 'no token provided', status: 401 };
+      next(err);
+      return;
+    }
+    // if req.auth.role or req.auth.employee is null, then the user is not an employee
+    if (req.auth.role === undefined || !req.auth.employee) {
+      const err: Err = { msg: 'user is not an employee', status: 401 };
+      console.log({ hey: !req.auth.role, ha: !req.auth.employee });
+      next(err);
+      return;
+    }
+
+    next();
+    return;
+  },
 };
 export default Middleware;
+
