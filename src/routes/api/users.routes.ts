@@ -5,6 +5,7 @@ import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
 import Middleware from '@utils/middleware';
 const router = Router();
+
 router.get('/', Middleware.PrivateRoute, async (req: Request, res: Response) => {
   if (req.auth?.role === undefined || req.auth.role > 1) {
     Logger.warn('no permission to access this route');
@@ -17,6 +18,7 @@ router.get('/', Middleware.PrivateRoute, async (req: Request, res: Response) => 
   const users = await UsersModel.find(query ? query : {});
   res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 });
+
 router.post('/', async (req: Request, res: Response) => {
   //const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
@@ -54,6 +56,7 @@ router.post('/', async (req: Request, res: Response) => {
   await user.save();
   res.status(200).send({ msg: 'user created', user: user.ToClient() });
 });
+
 router.put('/', async (req: Request, res: Response) => {
   if (!req.body.user.id) {
     Logger.warn('no id provided');
@@ -121,4 +124,3 @@ router.delete('/', async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'user deleted', user: user.ToClient() });
   return;
 });
-
