@@ -41,7 +41,6 @@ router.post('/', async (req: Request, res: Response) => {
         const id = emp._id;
         return { id: id, found: id === expense.empReq || id === expense.empTo };
       }),
-      //mira a ve su ere tu conectado al televisor
     });
     return;
   }

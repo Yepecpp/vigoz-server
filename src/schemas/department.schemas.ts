@@ -1,12 +1,38 @@
 import mongoose from 'mongoose';
-import { departmentDocument } from '@interfaces/primary/department.i';
+import zoderr from '@utils/zoderr';
+import { departmentZod, departmentDocument, IDepartment } from '@interfaces/primary/department.i';
+
 export const departmentsSchema = new mongoose.Schema<departmentDocument>({
   name: { type: String, required: true },
-  description: { type: String, required: false },
-  branch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'branches',
-    required: true,
-  },
+  description: { type: String, required: false }, // I commented this out because it was causing an error
+  branch: { type: String, required: true }, // || { type: mongoose.Schema.Types.ObjectId, ref: 'branches', required: false }
   phone: { type: String, required: false },
 });
+
+departmentsSchema.methods.VerifySchema = function (Ddata?: IDepartment | departmentDocument): {
+  success: boolean;
+  err?: ReturnType<typeof zoderr>;
+  data?: IDepartment;
+} {
+  if (!Ddata) {
+    Ddata = this;
+  }
+  let parse = departmentZod.safeParse(Ddata);
+  console.log(parse);
+  if (!parse.success) {
+    return { success: false, err: zoderr(parse.error) };
+  }
+  return { success: true, data: parse.data };
+};
+
+departmentsSchema.methods.ToClient = function (): IDepartment {
+  const curr = this as departmentDocument;
+  const department = {
+    id: curr._id.toString(),
+    name: curr.name,
+    description: curr.description,
+    branch: curr.branch,
+    phone: curr.phone,
+  };
+  return department;
+};

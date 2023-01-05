@@ -3,7 +3,6 @@ import { addressZod } from '@interfaces/common/address.i';
 import { companyZod } from './company.i';
 import { Document } from 'mongoose';
 export const branchZod = z.object({
-  id: z.string().optional(),
   company: companyZod || z.string(),
   name: z.string(),
   address: addressZod,

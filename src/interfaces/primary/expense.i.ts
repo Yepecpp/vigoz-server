@@ -3,6 +3,7 @@ import { employeeZod } from './employee.i';
 import { Document } from 'mongoose';
 import { currencyZod } from '@interfaces/common/currency.i';
 import zoderr from '@utils/zoderr';
+
 export const expenseZod = z.object({
   id: z.string().optional(),
   category: z.string(),
