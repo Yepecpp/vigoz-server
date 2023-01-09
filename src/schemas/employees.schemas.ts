@@ -3,14 +3,18 @@ import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 import usersModel from '@models/users.models';
 export const employeesSchema = new mongoose.Schema<employeeDocument>({
-  department: { type: mongoose.Schema.Types.ObjectId, ref: 'departments' },
-  salary: { type: Object, required: true },
-  identity: { type: Object, required: true },
-  address: { type: Object, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+  department: { type: mongoose.Schema.Types.ObjectId, ref: 'departments' } || {
+    type: String,
+    required: true,
+  },
+  salary: { type: Object, required: true } || { type: String, required: true },
+  identity: { type: Object, required: true } || { type: String, required: true },
+  address: { type: Object, required: true } || { type: String, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' } || { type: String, required: true },
   role: { type: String, required: true },
 });
-employeesSchema.methods.ToClient = function () {
+
+employeesSchema.methods.ToClient = function (): IEmployee {
   const curr = this as employeeDocument;
   const employee = {
     id: curr._id.toString(),
@@ -23,13 +27,14 @@ employeesSchema.methods.ToClient = function () {
   };
   return employee;
 };
-employeesSchema.methods.VerifySchema = function (Udata?: IEmployee): {
+
+employeesSchema.methods.VerifySchema = function (Epdata?: IEmployee): {
   success: boolean;
   err?: ReturnType<typeof zoderr>;
   data?: IEmployee;
 } {
-  Udata = Udata ? Udata : (this as IEmployee);
-  const parse = employeeZod.safeParse(Udata);
+  Epdata = Epdata ? Epdata : (this as IEmployee);
+  const parse = employeeZod.safeParse(Epdata);
   if (parse.success) {
     return {
       success: true,
@@ -41,6 +46,7 @@ employeesSchema.methods.VerifySchema = function (Udata?: IEmployee): {
     err: zoderr(parse),
   };
 };
+
 employeesSchema.pre('save', async function (next) {
   if (this.isNew) {
     await usersModel.findByIdAndUpdate(this.user, { is_employee: true });

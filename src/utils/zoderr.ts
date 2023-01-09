@@ -12,7 +12,7 @@ interface parseZ_err {
 
 const zoderr = (errs: any): parseZ_err[] => {
   let result: parseZ_err[] = [];
-  errs.errors.map((err: any) => {
+  errs.error.ZodError.map((err: any) => {
     result.push({
       code: err.code,
       err: {
