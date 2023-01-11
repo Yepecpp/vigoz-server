@@ -9,12 +9,7 @@ interface ITokenP {
 }
 export default class jwt {
   static sign(payload: any) {
-    // console.log(payload)
-    return JWT.sign(
-      payload,
-      secret as JWT.Secret,
-      { expiresIn: '1h' } as JWT.SignOptions
-    );
+    return JWT.sign(payload, secret as JWT.Secret, { expiresIn: '1h' } as JWT.SignOptions);
   }
   static verify(token: string): ITokenP {
     //verify the token and if it is valid, return the decoded token or null
@@ -25,7 +20,6 @@ export default class jwt {
       };
     } catch (err) {
       //q: if the jwt is invalid, which error does it throws?
-      console.log(err);
       if (err.name === 'TokenExpiredError') {
         return { data: null, status: { isValid: false, isExpired: true } };
       } else {

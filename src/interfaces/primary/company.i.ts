@@ -19,7 +19,7 @@ export const companyZod = z.object({
     Available: z.array(
       z.object({
         currency: currencyZod,
-      })
+      }),
     ),
   }),
 });

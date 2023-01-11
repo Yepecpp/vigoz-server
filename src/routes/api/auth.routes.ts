@@ -23,10 +23,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
   // data.username could be an email or a username
   const user = await UserModel.findOne({
-    $or: [
-      { 'login.username': data.username },
-      { 'login.email': data.username },
-    ],
+    $or: [{ 'login.username': data.username }, { 'login.email': data.username }],
   });
   if (!user) {
     Logger.warn('user not found');
@@ -47,9 +44,7 @@ router.post('/login', async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user._id });
   user.login.lastLogin = new Date(Date.now());
   await user.save();
-  res
-    .status(200)
-    .send({ msg: 'user logged in', token: token, user: user.ToClient() });
+  res.status(200).send({ msg: 'user logged in', token: token, user: user.ToClient() });
 });
 router.get('/', async (req: Request, res: Response) => {
   // this is where we get the user data
@@ -58,17 +53,19 @@ router.get('/', async (req: Request, res: Response) => {
   // if it is valid, we send back the user data
   if (!req.auth) {
     Logger.warn('no token provided on auth routes');
-    res.status(400).send({ msg: 'no token provided' });
+    res.status(401).send({ msg: 'no token provided or token is invalid' });
     return;
   }
   const { bearer, user } = req.auth;
-  if (user.status !== 'active') {
-    Logger.warn('user not active');
-    res.status(401).send({ msg: 'user not active' });
-    return;
-  }
-  res
-    .status(200)
-    .send({ msg: 'user found', token: bearer, user: user.ToClient() });
+  res.status(200).send({
+    msg: 'user found',
+    token: bearer,
+    user: user.ToClient(),
+    is_employee: user.is_employee,
+  });
 });
+/*router.put('/forgot-password', async (req: Request, res: Response) => {
+
+});*/
 export default router;
+

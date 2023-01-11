@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node -r tsconfig-paths/register -r ts-node/register dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "rm -r dist/*  && tsc -p ."
+    "build": "rm -r dist/  && tsc -p ."
   },
   "keywords": [],
   "nodemonConfig": {

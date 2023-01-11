@@ -16,7 +16,7 @@ const CheckCompanie = async () => {
   const Companie = await CompaniesModel.findOne({});
   if (Companie) return Companie._id as mongoose.Types.ObjectId;
   const companie = new CompaniesModel({
-    name: 'Vigoz',
+    name: 'Hielo Vigoz',
     phone: '0000000000',
     status: 'active',
     address: {
@@ -58,10 +58,7 @@ const CheckAdmin = async () => {
   Logger.info('Admin created');
   return admin._id as mongoose.Types.ObjectId;
 };
-const CheckEmployee = async (
-  id: mongoose.Types.ObjectId,
-  depid: mongoose.Types.ObjectId
-) => {
+const CheckEmployee = async (id: mongoose.Types.ObjectId, depid: mongoose.Types.ObjectId) => {
   const Employee = await EmployeesModel.findOne({});
   if (Employee) return;
   const employee = new EmployeesModel({
@@ -92,10 +89,10 @@ const CheckEmployee = async (
   return;
 };
 const CheckBranch = async (id: mongoose.Types.ObjectId) => {
-  const Branch = await BranchesModel.findOne({ name: 'admin' });
+  const Branch = await BranchesModel.findOne({ name: 'Principal' });
   if (Branch) return Branch._id as mongoose.Types.ObjectId;
   const branch = new BranchesModel({
-    name: 'admin',
+    name: 'Principal',
     phone: '0000000000',
     address: {
       street1: 'admin',
@@ -114,15 +111,9 @@ const CheckDepartament = async (id: mongoose.Types.ObjectId) => {
   const Departament = await DepartamentsModel.findOne({});
   if (Departament) return Departament._id as mongoose.Types.ObjectId;
   const departament = new DepartamentsModel({
-    name: 'admin',
+    name: 'IT',
     phone: '0000000000',
     status: 'active',
-    address: {
-      street1: 'admin',
-      street2: 'admin',
-      city: 'admin',
-      zip: '00000',
-    },
     branch: id,
   });
   await departament.save();
