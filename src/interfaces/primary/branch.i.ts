@@ -11,4 +11,12 @@ export const branchZod = z.object({
 });
 
 export type IBranch = z.infer<typeof branchZod>;
-export type branchDocument = IBranch & Document & {};
+export type branchDocument = IBranch &
+  Document & {
+    VerifySchema(Bdata?: IBranch | branchDocument): {
+      success: boolean;
+      err?: any;
+      data?: IBranch;
+    };
+    ToClient(): IBranch;
+  };

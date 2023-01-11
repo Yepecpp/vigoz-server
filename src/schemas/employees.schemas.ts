@@ -2,6 +2,7 @@ import { employeeDocument, employeeZod, IEmployee } from '@interfaces/primary/em
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 import usersModel from '@models/users.models';
+
 export const employeesSchema = new mongoose.Schema<employeeDocument>({
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'departments' } || {
     type: String,

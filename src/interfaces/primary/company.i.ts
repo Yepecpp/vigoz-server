@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { addressZod } from '@interfaces/common/address.i';
 import { currencyZod } from '@interfaces/common/currency.i';
 import { Document } from 'mongoose';
+
 export const companyZod = z.object({
   id: z.string().optional(),
   name: z.string(),
@@ -23,5 +24,14 @@ export const companyZod = z.object({
     ),
   }),
 });
+
 export type ICompany = z.infer<typeof companyZod>;
-export type CompanyDocument = ICompany & Document & {};
+export type CompanyDocument = ICompany &
+  Document & {
+    VerifySchema(Cdata?: ICompany | CompanyDocument): {
+      success: boolean;
+      err?: any;
+      data?: ICompany;
+    };
+    ToClient(): ICompany;
+  };
