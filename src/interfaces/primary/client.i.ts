@@ -3,23 +3,26 @@ import { addressZod } from '@interfaces/common/address.i';
 import { userZod } from './user.i';
 import { identityZod } from '@interfaces/common/indentity.i';
 import { Document } from 'mongoose';
+import zoderr from '@utils/zoderr';
+
 export const clientZod = z.object({
   id: z.string().optional(),
   name: z.string(),
-  address: addressZod,
+  address: addressZod || z.string(),
   user: userZod || z.string().nullish(),
-  identity: identityZod,
+  identity: identityZod || z.string(),
   rnc: z.string(),
   phone: z.string(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
+
 export type IClient = z.infer<typeof clientZod>;
 export type clientDocument = IClient &
   Document & {
-    VerifySchema(Udata?: IClient | clientDocument): {
+    VerifySchema(Cdata?: IClient | clientDocument): {
       success: boolean;
-      error?: z.ZodError<IClient>;
+      err?: ReturnType<typeof zoderr>;
       data?: IClient;
     };
     ToClient(): IClient;

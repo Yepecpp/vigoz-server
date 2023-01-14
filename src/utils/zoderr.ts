@@ -1,5 +1,3 @@
-import Logger from '@libs/logger';
-
 interface parseZ_err {
   code: string;
   err: {
@@ -11,8 +9,8 @@ interface parseZ_err {
 }
 
 const zoderr = (errs: any): parseZ_err[] => {
-  let result: parseZ_err[] = [];
-  errs.errors.map((err: any) => {
+  const result: parseZ_err[] = [];
+  errs.issues.map((err: any) => {
     result.push({
       code: err.code,
       err: {
@@ -23,7 +21,7 @@ const zoderr = (errs: any): parseZ_err[] => {
       isReq: err.message.includes('required'),
     });
   });
-  Logger.info(result);
   return result;
 };
 export default zoderr;
+

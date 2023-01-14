@@ -6,12 +6,15 @@ import { currencyZod } from '@interfaces/common/currency.i';
 import { departmentZod } from '@interfaces/primary/department.i';
 import { Document } from 'mongoose';
 import { identityZod } from '@interfaces/common/indentity.i';
+import zoderr from '@utils/zoderr';
+
 export enum Roles {
   admin = 0,
   supervisor = 1,
   staff = 2,
 }
 const eRoles = Convert.convertToTuple(Object.keys(Object.create(Roles)));
+
 export const employeeZod = z.object({
   id: z.string().optional(),
   user: userZod || z.string(),
@@ -25,5 +28,14 @@ export const employeeZod = z.object({
   department: departmentZod || z.string(),
   role: z.enum(eRoles).default('staff'),
 });
+
 export type IEmployee = z.infer<typeof employeeZod>;
-export type employeeDocument = IEmployee & Document & {};
+export type employeeDocument = IEmployee &
+  Document & {
+    VerifySchema(Epdata?: IEmployee | employeeDocument): {
+      success: boolean;
+      err?: ReturnType<typeof zoderr>;
+      data?: IEmployee;
+    };
+    ToClient(): IEmployee;
+  };
