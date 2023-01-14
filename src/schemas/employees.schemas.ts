@@ -34,7 +34,9 @@ employeesSchema.methods.VerifySchema = function (Epdata?: IEmployee): {
   err?: ReturnType<typeof zoderr>;
   data?: IEmployee;
 } {
-  Epdata = Epdata ? Epdata : (this as IEmployee);
+  if (!Epdata) {
+    Epdata = this as IEmployee;
+  }
   const parse = employeeZod.safeParse(Epdata);
   if (parse.success) {
     return {
@@ -44,7 +46,7 @@ employeesSchema.methods.VerifySchema = function (Epdata?: IEmployee): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 
@@ -54,3 +56,4 @@ employeesSchema.pre('save', async function (next) {
   }
   next();
 });
+

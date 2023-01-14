@@ -22,8 +22,7 @@ export const postEmployee = async (req: Request, res: Response) => {
   const check = employee.VerifySchema();
 
   if (!check.success) {
-    Logger.warn('employee data is not valid');
-    Logger.warn(check.err);
+    Logger.warn('employee data is not valid', req.logData);
     res.status(400).send({ msg: 'employee data is not valid', err: check.err });
     return;
   }
