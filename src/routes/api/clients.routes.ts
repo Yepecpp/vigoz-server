@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getClient, postClient, putClient } from '../../controllers/client.controller';
+import { getClient, postClient, putClient } from '@controllers/client.controller';
 
 const router = Router();
 
@@ -10,3 +10,4 @@ router.post('/', postClient);
 router.put('/', putClient);
 
 export default router;
+

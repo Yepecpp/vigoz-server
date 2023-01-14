@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getEmployee, postEmployee, putEmployee } from '../../controllers/employee.controller';
+import { getEmployee, postEmployee, putEmployee } from '@controllers/employee.controller';
 
 const router = Router();
 
@@ -12,3 +12,4 @@ router.post('/', postEmployee);
 router.put('/', putEmployee);
 
 export default router;
+

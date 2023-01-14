@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getLogin, postLogin } from '../../controllers/auth.controller';
+import { getLogin, postLogin } from '@controllers/auth.controller';
 
 const router = Router();
 
@@ -12,3 +12,4 @@ export default router;
 /*router.put('/forgot-password', async (req: Request, res: Response) => {
 
 });*/
+

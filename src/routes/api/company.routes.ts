@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCompany, postCompany, putCompany } from '../../controllers/company.controller';
+import { getCompany, postCompany, putCompany } from '@controllers/company.controller';
 
 const router = Router();
 
@@ -10,3 +10,4 @@ router.post('/', postCompany);
 router.put('/', putCompany);
 
 export default router;
+
