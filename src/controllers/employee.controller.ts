@@ -6,18 +6,13 @@ import Logger from '@libs/logger';
 // Fuction of the route: GET /api/v1/employees
 export const getEmployee = async (req: Request, res: Response) => {
   //this is where we get all the employees;
-  console.log(req.query);
-  const employees = await EmployeesModel.find();
-
+  const employees = await EmployeesModel.find(req.query);
   if (!employees) {
     Logger.warn('no employees found');
     res.status(404).send({ msg: 'no employees found' });
     return;
   }
-
-  res
-    .status(200)
-    .send({ msg: 'employees', employees: employees.map((employee) => employee.ToClient()) });
+  res.status(200).send({ employees: employees.map((employee) => employee.ToClient()) });
 };
 
 // Fuction of the route: POST /api/v1/employees
@@ -72,3 +67,4 @@ export const putEmployee = async (req: Request, res: Response) => {
   // await employee.save();
   res.status(200).send({ msg: 'employee updated', employee: employee.ToClient() });
 };
+

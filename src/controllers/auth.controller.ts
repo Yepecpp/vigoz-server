@@ -6,7 +6,7 @@ import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
 
 // Fuction of the route: POST /api/auth/login
-export const postLogin = async (req: Request, res: Response) => {
+export const Login = async (req: Request, res: Response) => {
   // this is where we login a user
   // we get the username and password from the request body
   // we check if the user exists
@@ -49,7 +49,7 @@ export const postLogin = async (req: Request, res: Response) => {
 };
 
 // Fuction of the route: GET /api/auth
-export const getLogin = async (req: Request, res: Response) => {
+export const GetAuth = async (req: Request, res: Response) => {
   // this is where we get the user data
   // we get the token from the request header
   // we verify the token
@@ -59,11 +59,11 @@ export const getLogin = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no token provided or token is invalid' });
     return;
   }
-  const { bearer, user } = req.auth;
   res.status(200).send({
     msg: 'user found',
-    token: bearer,
-    user: user.ToClient(),
-    is_employee: user.is_employee,
+    token: req.auth.bearer,
+    user: req.auth.user.ToClient(),
+    is_employee: req.auth.user.is_employee,
   });
 };
+

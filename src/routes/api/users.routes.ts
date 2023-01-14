@@ -8,9 +8,9 @@ router.get('/', Middleware.PrivateRoute, getUsers);
 
 router.post('/', postUsers);
 
-router.put('/', putUsers);
+router.put('/', Middleware.PrivateRoute, putUsers);
 
-router.delete('/', deleteUsers);
+router.delete('/', Middleware.PrivateRoute, deleteUsers);
 
 export default router;
 

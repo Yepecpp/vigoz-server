@@ -7,7 +7,7 @@ import employeeRoutes from './employees.routes';
 import clientRoutes from './clients.routes';
 import branchRoutes from './branches.routes';
 import companyRoutes from './company.routes';
-
+import Middleware from '@utils/middleware';
 const router = Router();
 router.get('/', (_, res: Response) => {
   res.send('Hello World from api v1!');
@@ -15,11 +15,13 @@ router.get('/', (_, res: Response) => {
 
 router.use('/users', userRoutes);
 router.use('/auth', authRoutes);
-router.use('/expense', expenseRoutes);
-router.use('/department', departmentRoutes);
-router.use('/employee', employeeRoutes);
-router.use('/client', clientRoutes);
-router.use('/branch', branchRoutes);
-router.use('/company', companyRoutes);
+router.use(Middleware.PrivateRoute);
+router.use('/expenses', expenseRoutes);
+router.use('/departments', departmentRoutes);
+router.use('/employees', employeeRoutes);
+router.use('/clients', clientRoutes);
+router.use('/branches', branchRoutes);
+router.use('/companies', companyRoutes);
 
 export default router;
+

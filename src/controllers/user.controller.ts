@@ -14,7 +14,6 @@ export const getUsers = async (req: Request, res: Response) => {
   }
   let query = req.query as any;
   if (query?.login?.passw) delete query.login.passw;
-  console.log(query);
   const users = await UsersModel.find(query ? query : {});
   res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 };
@@ -65,10 +64,12 @@ export const putUsers = async (req: Request, res: Response) => {
     res.status(400).send({ msg: 'no id provided' });
     return;
   }
-  if (req.auth?.user._id.toString() !== req.body.user.id || req.auth?.role !== 0) {
-    Logger.warn('you are not allowed to update this user');
-    res.status(401).send({ msg: 'you are not allowed to update this user' });
-    return;
+  if (req.auth?.user._id.toString() !== req.body.user.id) {
+    if (req.auth?.role === undefined || req.auth.role !== 0) {
+      Logger.warn('you are not allowed to update this user');
+      res.status(401).send({ msg: 'you are not allowed to update this user' });
+      return;
+    }
   }
   const user = await UsersModel.findById(req.body.user.id);
   if (!user) {
@@ -126,3 +127,4 @@ export const deleteUsers = async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'user deleted', user: user.ToClient() });
   return;
 };
+
