@@ -20,10 +20,21 @@ export const employeeZod = z.object({
   user: userZod || z.string(),
   address: addressZod,
   identity: identityZod,
+  birthDate: z.date(),
+  details: z.object({
+    position: z.string(),
+    type: z.enum(['fulltime', 'part-time', 'contractor', 'inter']).default('fulltime'),
+    contract: z.object({
+      hireday: z.date(),
+      terminated: z.date().optional(),
+      Id: z.string().optional(),
+    }),
+  }),
+  gender: z.enum(['male', 'female', 'other']).default('other'),
   salary: z.object({
     amount: z.number(),
     currency: currencyZod,
-    period: z.enum(['hour', 'day', 'fortnight', 'week', 'month']).default('fortnight'),
+    period: z.enum(['hourly', 'dayly', 'fortnightly', 'weekly', 'monthly']).default('fortnightly'),
   }),
   department: departmentZod || z.string(),
   role: z.enum(eRoles).default('staff'),

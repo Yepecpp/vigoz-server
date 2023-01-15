@@ -10,15 +10,38 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
   },
   salary: {
     amount: { type: Number, required: true, positive: true },
-    currency: { type: String, required: true },
+    currency: {
+      name: { type: String, required: true },
+      symbol: { type: String, required: true },
+      code: { type: String, required: true },
+    },
     period: {
       type: String,
-      enum: ['hour', 'day', 'week', 'fortnight', 'month'],
+      enum: ['hour', 'dayly', 'weekly', 'fortnightly', 'monthly'],
       default: 'fortnight',
     },
   },
+  birthDate: { type: Date, required: true },
   identity: identity,
   address: address,
+  details: {
+    position: { type: String, required: true },
+    type: {
+      type: String,
+      enum: ['fulltime', 'part-time', 'contractor', 'inter'],
+      default: 'fulltime',
+    },
+    contract: {
+      hireday: { type: Date, required: true },
+      terminated: { type: Date },
+      Id: { type: String },
+    },
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+    default: 'other',
+  },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
   role: { type: String, required: true },
 });
@@ -30,9 +53,12 @@ employeesSchema.methods.ToClient = function (): IEmployee {
     department: curr.department,
     salary: curr.salary,
     identity: curr.identity,
+    birthDate: curr.birthDate,
     address: curr.address,
     user: curr.user,
     role: curr.role,
+    details: curr.details,
+    gender: curr.gender,
   };
   return employee;
 };
