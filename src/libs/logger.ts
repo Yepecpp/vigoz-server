@@ -45,7 +45,7 @@ const ChalkFormat = (info: ChalkFormat): String => {
   }
   //append to file
   fs.appendFile(
-    `${logDir}/${logdate}/${date.getDay() + 1}.log`,
+    `${logDir}/${logdate}/${date.getDate()}.log`,
     logLine + '\n',
     { encoding: 'utf8' },
     (err) => {
@@ -58,3 +58,4 @@ const ChalkFormat = (info: ChalkFormat): String => {
   );
   return line;
 };
+
