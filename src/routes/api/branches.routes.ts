@@ -10,4 +10,3 @@ router.post('/', postBranch);
 router.put('/', putBranch);
 
 export default router;
-

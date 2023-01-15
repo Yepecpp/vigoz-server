@@ -66,4 +66,3 @@ export const putEmployee = async (req: Request, res: Response) => {
   // await employee.save();
   res.status(200).send({ msg: 'employee updated', employee: employee.ToClient() });
 };
-

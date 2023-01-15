@@ -12,4 +12,3 @@ router.post('/', postEmployee);
 router.put('/', putEmployee);
 
 export default router;
-

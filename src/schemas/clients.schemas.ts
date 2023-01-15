@@ -26,7 +26,7 @@ clientsSchema.methods.VerifySchema = function (Cdata?: clientDocument): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 

@@ -10,7 +10,17 @@ export const clientZod = z.object({
   name: z.string(),
   address: addressZod || z.string(),
   user: userZod || z.string().nullish(),
-  identity: identityZod || z.string(),
+  identity: z.object({
+    type: z.enum(['Fisical', 'Company']).default('Company'), //could be a normal civilian or a company
+    identity:
+      identityZod ||
+      z.object({
+        name: z.string(),
+        address: addressZod,
+        phone: z.string(),
+        email: z.string(),
+      }),
+  }),
   rnc: z.string(),
   phone: z.string(),
   createdAt: z.string().optional(),

@@ -10,4 +10,3 @@ router.post('/', postClient);
 router.put('/', putClient);
 
 export default router;
-

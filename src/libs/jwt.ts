@@ -9,7 +9,7 @@ interface ITokenP {
 }
 export default class jwt {
   static sign(payload: any) {
-    return JWT.sign(payload, secret as JWT.Secret, { expiresIn: '1h' } as JWT.SignOptions);
+    return JWT.sign(payload, secret as JWT.Secret, { expiresIn: '12h' } as JWT.SignOptions);
   }
   static verify(token: string): ITokenP {
     //verify the token and if it is valid, return the decoded token or null

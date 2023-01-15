@@ -10,4 +10,3 @@ router.post('/', postDepartment);
 router.put('/', putDepartment);
 
 export default router;
-

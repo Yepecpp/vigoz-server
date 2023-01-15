@@ -127,4 +127,3 @@ export const deleteUsers = async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'user deleted', user: user.ToClient() });
   return;
 };
-

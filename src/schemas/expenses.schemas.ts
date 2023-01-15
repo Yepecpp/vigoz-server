@@ -21,7 +21,6 @@ expensesSchema.methods.VerifySchema = function (Edata?: IExpense | expenseDocume
     Edata = this;
   }
   let parse = expenseZod.safeParse(Edata);
-  console.log(parse);
   if (!parse.success) {
     return { success: false, err: zoderr(parse.error) };
   }

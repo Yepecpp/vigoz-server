@@ -12,4 +12,3 @@ export default router;
 /*router.put('/forgot-password', async (req: Request, res: Response) => {
 
 });*/
-

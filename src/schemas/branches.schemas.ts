@@ -29,7 +29,7 @@ branchesSchema.methods.VerifySchema = function (Bdata?: branchDocument): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 

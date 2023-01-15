@@ -66,4 +66,3 @@ export const GetAuth = async (req: Request, res: Response) => {
     is_employee: req.auth.user.is_employee,
   });
 };
-

@@ -24,4 +24,3 @@ router.use('/branches', branchRoutes);
 router.use('/companies', companyRoutes);
 
 export default router;
-

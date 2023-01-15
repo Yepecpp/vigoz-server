@@ -23,7 +23,7 @@ export const employeeZod = z.object({
   salary: z.object({
     amount: z.number(),
     currency: currencyZod,
-    period: z.enum(['hour', 'day', 'week', 'month', 'year']).default('month'),
+    period: z.enum(['hour', 'day', 'week', 'month']).default('month'),
   }),
   department: departmentZod || z.string(),
   role: z.enum(eRoles).default('staff'),

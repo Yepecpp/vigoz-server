@@ -8,4 +8,3 @@ router.get('/', getExpenses);
 router.post('/', postExpenses);
 
 export default router;
-

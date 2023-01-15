@@ -10,4 +10,3 @@ router.post('/', postCompany);
 router.put('/', putCompany);
 
 export default router;
-

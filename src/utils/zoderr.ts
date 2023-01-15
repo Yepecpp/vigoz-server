@@ -24,4 +24,3 @@ const zoderr = (errs: any): parseZ_err[] => {
   return result;
 };
 export default zoderr;
-

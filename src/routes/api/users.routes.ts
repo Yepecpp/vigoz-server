@@ -13,4 +13,3 @@ router.put('/', Middleware.PrivateRoute, putUsers);
 router.delete('/', Middleware.PrivateRoute, deleteUsers);
 
 export default router;
-

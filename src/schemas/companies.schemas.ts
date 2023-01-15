@@ -36,7 +36,7 @@ companiesSchema.methods.VerifySchema = function (Cdata?: CompanyDocument): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 
