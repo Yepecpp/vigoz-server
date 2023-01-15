@@ -5,9 +5,8 @@ import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
 
 // Fuction of the route: GET /api/v1/department
-export const getDeparment = async (req: Request, res: Response) => {
+export const getDeparment = async (_req: Request, res: Response) => {
   const departments = await DeparmentModel.find();
-  console.log(req.query);
   res.status(200).send({
     msg: 'departments',
     departments: departments.map((department) => department.ToClient()),
@@ -43,7 +42,7 @@ export const postDepartment = async (req: Request, res: Response) => {
 // Fuction of the route: PUT /api/v1/department
 export const putDepartment = async (req: Request, res: Response) => {
   //this is where we update a department
-  const department = await DeparmentModel.findById(req.body.department._id);
+  const department = await DeparmentModel.findById(req.body.department.id);
 
   if (!department) {
     Logger.warn("cant update this department beacuse it doesn't exists");
