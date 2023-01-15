@@ -9,12 +9,24 @@ export const payrollZod = z.object({
   employee: employeeZod || z.string().uuid(),
   values: z.object({
     currency: currencyZod,
-    totalAmount: z.number().positive(),
-    tax: z.number().positive(),
+    salary: z.number().positive(),
+    tax: z.object({
+      percentage: z.number().positive(),
+      amount: z.number().positive(),
+    }),
     social: z.object({
-      health: z.number().positive(),
-      pension: z.number().positive(),
-      total: z.number().positive(),
+      health: z.object({
+        percentage: z.number().positive(),
+        amount: z.number().positive(),
+      }),
+      pension: z.object({
+        percentage: z.number().positive(),
+        amount: z.number().positive(),
+      }),
+      total: z.object({
+        percentage: z.number().positive(),
+        amount: z.number().positive(),
+      }),
     }),
     netAmount: z.number().positive(),
   }),

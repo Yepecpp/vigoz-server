@@ -8,11 +8,23 @@ export const payrollsSchema = new mongoose.Schema<payrollDocument>({
     currency: { type: String, required: true },
     salary: { type: Number, required: true, positive: true },
     extra: { type: Number, required: true, positive: true },
-    tax: { type: Number, required: true, positive: true },
+    tax: {
+      percentage: { type: Number, required: true, positive: true },
+      amount: { type: Number, required: true, positive: true },
+    },
     social: {
-      health: { type: Number, required: true, positive: true },
-      pension: { type: Number, required: true, positive: true },
-      total: { type: Number, required: true, positive: true },
+      health: {
+        percentage: { type: Number, required: true, positive: true },
+        amount: { type: Number, required: true, positive: true },
+      },
+      pension: {
+        percentage: { type: Number, required: true, positive: true },
+        amount: { type: Number, required: true, positive: true },
+      },
+      total: {
+        percentage: { type: Number, required: true, positive: true },
+        amount: { type: Number, required: true, positive: true },
+      },
     },
     netAmount: { type: Number, required: true, positive: true },
   },
