@@ -5,7 +5,18 @@ import mongoose from 'mongoose';
 let UsersSchema = new mongoose.Schema<userDocument>({
   name: { type: String, required: true },
   last_name: { type: String, required: true },
-  login: { type: Object, required: true },
+  login: {
+    username: { type: String, required: true, unique: true, lowercase: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    passw: { type: String, required: true },
+    provider: {
+      type: String,
+      required: true,
+      enum: ['local', 'google', 'facebook'],
+      default: 'local',
+    },
+    lastLogin: { type: Date, required: true, default: Date.now },
+  },
   phone: { type: String, required: false },
   createdAt: {
     type: Date,

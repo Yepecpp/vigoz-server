@@ -1,10 +1,11 @@
 import { branchDocument, IBranch, branchZod } from '@interfaces/primary/branch.i';
 import mongoose from 'mongoose';
+import { address } from './common';
 import zoderr from '@utils/zoderr';
 
 export const branchesSchema = new mongoose.Schema<branchDocument>({
   name: { type: String, required: true },
-  address: { type: Object, required: true },
+  address: address,
   phone: { type: String, required: true },
   email: { type: String, required: true },
   company: {

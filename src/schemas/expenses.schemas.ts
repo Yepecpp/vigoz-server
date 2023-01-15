@@ -5,9 +5,21 @@ import zoderr from '@utils/zoderr';
 export const expensesSchema = new mongoose.Schema<expenseDocument>({
   category: { type: String, required: true },
   description: { type: String, required: true },
-  amount: { type: Object, required: true },
-  date_ex: { type: Date, required: true },
-  state: { type: Boolean, required: true },
+  amount: {
+    value: { type: Number, required: true },
+    currency: {
+      symbol: { type: String, required: true },
+      name: { type: String, required: true },
+      code: { type: String, required: true },
+    },
+  },
+  date_ex: { type: Date, required: true, default: Date.now },
+  state: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
+    required: true,
+  },
   empReq: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: true },
   empTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: false },
 });

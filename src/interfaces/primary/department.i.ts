@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
 
 export const departmentZod = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   name: z.string(),
   description: z.string().optional(),
   phone: z.string().optional(),

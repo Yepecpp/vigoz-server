@@ -16,14 +16,14 @@ export enum Roles {
 const eRoles = Convert.convertToTuple(Object.keys(Object.create(Roles)));
 
 export const employeeZod = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   user: userZod || z.string(),
   address: addressZod,
   identity: identityZod,
   salary: z.object({
     amount: z.number(),
     currency: currencyZod,
-    period: z.enum(['hour', 'day', 'week', 'month']).default('month'),
+    period: z.enum(['hour', 'day', 'fortnight', 'week', 'month']).default('fortnight'),
   }),
   department: departmentZod || z.string(),
   role: z.enum(eRoles).default('staff'),

@@ -2,16 +2,24 @@ import { employeeDocument, employeeZod, IEmployee } from '@interfaces/primary/em
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 import usersModel from '@models/users.models';
-
+import { address, identity } from './common';
 export const employeesSchema = new mongoose.Schema<employeeDocument>({
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'departments' } || {
     type: String,
     required: true,
   },
-  salary: { type: Object, required: true } || { type: String, required: true },
-  identity: { type: Object, required: true } || { type: String, required: true },
-  address: { type: Object, required: true } || { type: String, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' } || { type: String, required: true },
+  salary: {
+    amount: { type: Number, required: true, positive: true },
+    currency: { type: String, required: true },
+    period: {
+      type: String,
+      enum: ['hour', 'day', 'week', 'fortnight', 'month'],
+      default: 'fortnight',
+    },
+  },
+  identity: identity,
+  address: address,
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
   role: { type: String, required: true },
 });
 

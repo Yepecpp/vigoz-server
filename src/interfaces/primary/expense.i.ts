@@ -5,7 +5,7 @@ import { currencyZod } from '@interfaces/common/currency.i';
 import zoderr from '@utils/zoderr';
 
 export const expenseZod = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid().optional(),
   category: z.string(),
   description: z.string(),
   amount: z.object({
@@ -13,7 +13,7 @@ export const expenseZod = z.object({
     currency: currencyZod,
   }),
   date_ex: z.date(),
-  state: z.boolean(),
+  state: z.enum(['pending', 'approved', 'rejected']).default('pending'),
   empReq: employeeZod || z.string(),
   empTo: employeeZod || z.string().optional(),
 });
