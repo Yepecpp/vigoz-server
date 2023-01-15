@@ -1,14 +1,14 @@
 import { IProduction, productionDocument, productionZod } from '@interfaces/primary/production.i';
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
-const productionsSchema = new mongoose.Schema<productionDocument>({
+export const productionsSchema = new mongoose.Schema<productionDocument>({
   date: { type: Date, required: true, default: Date.now },
   product: {
     type: { type: String, required: true, enum: ['Ice', 'Bags'], default: 'Ice' },
     quantity: { type: Number, required: true, default: 0 },
   },
-  storage: { type: mongoose.Schema.Types.ObjectId, ref: 'Storages', required: true },
-  employee: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: true },
+  storage: { type: mongoose.Schema.Types.ObjectId, ref: 'storages', required: true },
+  employee: { type: mongoose.Schema.Types.ObjectId, ref: 'employees', required: true },
 });
 productionsSchema.methods.VerifySchema = function (Udata?: IProduction | productionDocument): {
   success: boolean;

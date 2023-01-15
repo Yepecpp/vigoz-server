@@ -58,4 +58,3 @@ const ChalkFormat = (info: ChalkFormat): String => {
   );
   return line;
 };
-

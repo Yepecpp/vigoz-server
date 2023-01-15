@@ -23,4 +23,3 @@ export type storageDocument = IStorage &
     };
     ToClient(): IStorage;
   };
-

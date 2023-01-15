@@ -2,13 +2,14 @@ import { z } from 'zod';
 // import { branchZod } from './branch.i';
 import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
+import { branchZod } from './branch.i';
 
 export const departmentZod = z.object({
   id: z.string().uuid().optional(),
   name: z.string(),
   description: z.string().optional(),
   phone: z.string().optional(),
-  branch: z.string() /* || branchZod.optional() */, // I commented this out because it was causing an error
+  branch: branchZod || z.string(),
 });
 
 export type IDepartment = z.infer<typeof departmentZod>;

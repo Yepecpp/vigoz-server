@@ -5,7 +5,7 @@ import { address, identity } from './common';
 export const clientsSchema = new mongoose.Schema<clientDocument>({
   name: { type: String, required: true },
   address: address,
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   identity: identity || {
     type: {
       type: String,

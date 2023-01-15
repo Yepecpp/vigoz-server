@@ -15,13 +15,18 @@ export const expensesSchema = new mongoose.Schema<expenseDocument>({
   },
   date_ex: { type: Date, required: true, default: Date.now },
   state: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
-    required: true,
+    status: {
+      type: String,
+      required: true,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
+    },
+    updated: { type: Date, required: true, default: Date.now },
   },
-  empReq: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: true },
-  empTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Employees', required: false },
+  creatorEmp: { type: mongoose.Schema.Types.ObjectId, ref: 'employees', required: true },
+  method: { type: String, required: true, enum: ['cash', 'bank', 'credit card'] },
+  destination: { type: String, required: true, enum: ['employees', 'providers'] },
+  destinationData: { type: mongoose.Schema.Types.ObjectId, refPath: 'destination' },
 });
 
 expensesSchema.methods.VerifySchema = function (Edata?: IExpense | expenseDocument): {
@@ -48,8 +53,10 @@ expensesSchema.methods.ToClient = function (): IExpense {
     amount: curr.amount,
     date_ex: curr.date_ex,
     state: curr.state,
-    empReq: curr.empReq,
-    empTo: curr.empTo,
+    creatorEmp: curr.creatorEmp,
+    method: curr.method,
+    destination: curr.destination,
+    destinationData: curr.destinationData,
   };
   return expense;
 };

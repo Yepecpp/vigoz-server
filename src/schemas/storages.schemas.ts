@@ -1,7 +1,7 @@
 import { IStorage, storageZod, storageDocument } from '@interfaces/primary/storage.i';
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
-const storagesSchema = new mongoose.Schema<storageDocument>({
+export const storagesSchema = new mongoose.Schema<storageDocument>({
   name: { type: String, required: true },
   category: { type: String, required: true },
   status: { type: String, required: true },
@@ -9,7 +9,7 @@ const storagesSchema = new mongoose.Schema<storageDocument>({
   currentCapacity: { type: Number, required: true },
   createdAt: { type: Date, required: true, default: Date.now, immutable: true },
   updatedAt: { type: Date, required: true, default: Date.now },
-  branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branches', required: true },
+  branch: { type: mongoose.Schema.Types.ObjectId, ref: 'branches', required: true },
 });
 storagesSchema.methods.VerifySchema = function (Udata?: IStorage | storageDocument): {
   success: boolean;
@@ -40,4 +40,3 @@ storagesSchema.methods.ToClient = function (): IStorage {
   };
   return storage;
 };
-

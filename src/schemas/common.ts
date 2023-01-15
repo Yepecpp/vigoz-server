@@ -41,4 +41,3 @@ export const identity = {
     required: true,
   },
 };
-
