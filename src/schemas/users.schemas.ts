@@ -25,7 +25,7 @@ let UsersSchema = new mongoose.Schema<userDocument>({
     default: Date.now,
   },
   updatedAt: { type: Date, required: false, default: Date.now },
-  status: { type: String, enum: ['active', 'inactive', 'deleted'], required: true },
+  status: { type: String, required: true },
   meta: { type: Object, required: false },
   info: { type: Object, required: false },
   is_employee: { type: Boolean, default: false, required: false },

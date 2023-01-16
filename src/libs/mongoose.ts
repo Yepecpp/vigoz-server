@@ -20,6 +20,7 @@ function CreateOptions(): any {
 const { MONGO_URI, options } = CreateOptions();
 async function Checkcon(): Promise<Mongoose> {
   mongoose.set('strictQuery', true);
+  mongoose.set('strictPopulate', false);
   return mongoose.connect(MONGO_URI, options as ConnectOptions);
 }
 

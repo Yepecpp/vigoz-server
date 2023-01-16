@@ -15,11 +15,7 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
       symbol: { type: String, required: true },
       code: { type: String, required: true },
     },
-    period: {
-      type: String,
-      enum: ['hour', 'dayly', 'weekly', 'fortnightly', 'monthly'],
-      default: 'fortnight',
-    },
+    period: { type: String, required: true },
   },
   birthDate: { type: Date, required: true },
   identity: identity,
@@ -32,7 +28,7 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
       default: 'fulltime',
     },
     contract: {
-      hireday: { type: Date, required: true },
+      hireday: { type: Date, required: true, default: Date.now(), immutable: true },
       terminated: { type: Date },
       Id: { type: String },
     },
@@ -63,13 +59,13 @@ employeesSchema.methods.ToClient = function (): IEmployee {
   return employee;
 };
 
-employeesSchema.methods.VerifySchema = function (Epdata?: IEmployee): {
+employeesSchema.methods.VerifySchema = function (Epdata?: any): {
   success: boolean;
   err?: ReturnType<typeof zoderr>;
   data?: IEmployee;
 } {
   if (!Epdata) {
-    Epdata = this as IEmployee;
+    Epdata = this as any;
   }
   const parse = employeeZod.safeParse(Epdata);
   if (parse.success) {

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import Convert from '@utils/convert';
 import { addressZod } from '@interfaces/common/address.i';
 import { userZod } from './user.i';
 import { currencyZod } from '@interfaces/common/currency.i';
@@ -13,20 +12,19 @@ export enum Roles {
   supervisor = 1,
   staff = 2,
 }
-const eRoles = Convert.convertToTuple(Object.keys(Object.create(Roles)));
 
 export const employeeZod = z.object({
   id: z.string().optional(),
-  user: userZod || z.string(),
+  user: userZod.optional().or(z.string()),
   address: addressZod,
   identity: identityZod,
-  birthDate: z.date(),
+  birthDate: z.date().or(z.string()),
   details: z.object({
     position: z.string(),
-    type: z.enum(['fulltime', 'part-time', 'contractor', 'inter']).default('fulltime'),
+    type: z.enum(['fulltime', 'parttime', 'contractor', 'inter']).default('fulltime'),
     contract: z.object({
-      hireday: z.date(),
-      terminated: z.date().optional(),
+      hireday: z.date().or(z.string()),
+      terminated: z.date().or(z.string()).optional(),
       Id: z.string().optional(),
     }),
   }),
@@ -34,10 +32,10 @@ export const employeeZod = z.object({
   salary: z.object({
     amounts: z.array(z.number()).max(2).min(1),
     currency: currencyZod,
-    period: z.string().default('fortnightly'),
+    period: z.string(),
   }),
-  department: departmentZod || z.string(),
-  role: z.enum(eRoles).default('staff'),
+  department: departmentZod.optional().or(z.string()),
+  role: z.enum(['admin', 'supervisor', 'staff']).default('staff'),
 });
 
 export type IEmployee = z.infer<typeof employeeZod>;

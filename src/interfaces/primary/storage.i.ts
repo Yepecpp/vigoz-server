@@ -8,11 +8,11 @@ export const storageZod = z
     name: z.string(),
     category: z.string(),
     status: z.enum(['active', 'inactive', 'Damaged']).default('active'),
-    maxCapacity: z.number().positive().default(0),
-    currentCapacity: z.number().positive().default(0),
+    maxCapacity: z.number().min(0).default(0),
+    currentCapacity: z.number().min(0).default(0),
     createdAt: z.date().nullish(),
     updatedAt: z.date().nullish(),
-    branch: branchZod || z.string().nullish(),
+    branch: branchZod.optional().or(z.string()).nullish(),
   })
   .refine((value) => value.maxCapacity > value.currentCapacity, {
     message: 'currentCapacity cannot be greater than maxCapacity',

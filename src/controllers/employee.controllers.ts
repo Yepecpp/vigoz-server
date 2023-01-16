@@ -24,11 +24,9 @@ export const postEmployee = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
-  const employee = new EmployeesModel(req.body.employee);
+  const employee = req.body.employee;
   if (!employee.salary.currency) {
-    const department = await DepartmentModel.findById(employee.department)
-      .populate('branches')
-      .populate('companies');
+    const department = await (await DepartmentModel.findById(employee.department).populate('branch'))?.populate('branch.company');
     if (!department) {
       Logger.warn('cant add employee because department doesnt exist');
       res.status(404).send({
@@ -42,18 +40,20 @@ export const postEmployee = async (req: Request, res: Response) => {
       });
       return;
     }
-    employee.salary.currency = department.branch.company.currencies.default;
+    if (typeof department.branch !== 'string' && typeof department.branch?.company !== 'string') {
+      employee.salary = { ...req.body.employee.salary, currency: department?.branch?.company?.currencies.default };
+    }
   }
-  const check = employee.VerifySchema();
+  const employeedb = new EmployeesModel(employee);
+  const check = employeedb.VerifySchema();
 
   if (!check.success) {
     Logger.warn('employee data is not valid', req.logData);
     res.status(400).send({ msg: 'employee data is not valid', err: check.err });
     return;
   }
-
-  await employee.save();
-  res.status(201).send({ msg: 'employee added', employee: employee.ToClient() });
+  await employeedb.save();
+  res.status(201).send({ msg: 'employee added', employee: employeedb.ToClient() });
 };
 
 // Fuction of the route: PUT /api/v1/employees
@@ -85,8 +85,6 @@ export const putEmployee = async (req: Request, res: Response) => {
   employee.identity = newdata.identity;
   employee.salary = newdata.salary;
   employee.role = newdata.role;
-
-  console.log(employee);
 
   // await employee.save();
   res.status(200).send({ msg: 'employee updated', employee: employee.ToClient() });

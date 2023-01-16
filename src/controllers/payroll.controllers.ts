@@ -21,9 +21,7 @@ const socialTypes = {
 const deductions = (payroll: IPayroll, totalSalary: number) => {
   const values = payroll.values;
   const salaryBfTax = values.salary + values.extra;
-  const selectedType = salaryType
-    .sort((a, b) => b.value - a.value)
-    .find((s) => s.value < totalSalary);
+  const selectedType = salaryType.sort((a, b) => b.value - a.value).find((s) => s.value < totalSalary);
   const taxPercentage = selectedType ? selectedType.percent : 0;
   values.tax = {
     percentage: taxPercentage,
@@ -40,8 +38,7 @@ const deductions = (payroll: IPayroll, totalSalary: number) => {
     },
     total: {
       percentage: socialTypes.health.percentage + socialTypes.pension.percentage,
-      amount:
-        salaryBfTax * ((socialTypes.health.percentage + socialTypes.pension.percentage) / 100),
+      amount: salaryBfTax * ((socialTypes.health.percentage + socialTypes.pension.percentage) / 100),
     },
   };
   values.netAmount = salaryBfTax - values.tax.amount - values.social.total.amount;
@@ -59,20 +56,9 @@ export const getPayrolls = async (req: Request, res: Response) => {
   }
   const query = req.query as any;
   const payrolls = await PayrollsModel.find(query);
-  res
-    .status(200)
-    .send({ msg: 'payrolls', payrolls: payrolls.map((payroll) => payroll.ToClient()) });
+  res.status(200).send({ msg: 'payrolls', payrolls: payrolls.map((payroll) => payroll.ToClient()) });
 };
-
-// Fuction of the route: POST /api/v1/payrolls
-export const postPayrolls = async (req: Request, res: Response) => {
-  //this is where we register a new payroll
-  if (req.auth?.role === undefined || req.auth.role > 1) {
-    Logger.warn('no permission to access this route');
-    res.status(401).send({ msg: 'no permission to access this route' });
-    return;
-  }
-  /*here we recive {
+/*here we recive {
     payroll:{
       employee: string,
       values:{
@@ -88,7 +74,15 @@ export const postPayrolls = async (req: Request, res: Response) => {
       }
   }
   */
-  const payroll = new PayrollsModel(req.body.payroll);
+// Fuction of the route: POST /api/v1/payrolls
+export const postPayrolls = async (req: Request, res: Response) => {
+  //this is where we register a new payroll
+  if (req.auth?.role === undefined || req.auth.role > 1) {
+    Logger.warn('no permission to access this route');
+    res.status(401).send({ msg: 'no permission to access this route' });
+    return;
+  }
+  const payroll = req.body.payroll as IPayroll;
   // here we check if the employee exists
   const employee = await EmployeesModel.findById(payroll.employee);
   if (!employee) {
@@ -128,26 +122,26 @@ export const postPayrolls = async (req: Request, res: Response) => {
     payroll.values.salary = employee.salary.amounts[0] ? employee.salary.amounts[0] : 0;
   }
   // here we insert the values of the employee salary
-  payroll.process.processedBy = req.auth.employee?._id;
+  payroll.process.processedBy = req.auth.employee?._id.toString();
   payroll.values.extra = payroll.values.extra ? payroll.values.extra : 0;
   // here we calculate the payroll,
   payroll.values = deductions(
     payroll,
     employee.salary.amounts.reduce((a, b) => a + b, 0),
   );
-  payroll.values.currency = payroll.values.currency
-    ? employee.salary.currency
-    : payroll.values.currency;
+  payroll.values.currency = !payroll.values.currency ? employee.salary.currency : payroll.values.currency;
   // here we set the status of the payroll
   payroll.process.status = payroll.process.status ? payroll.process.status : 'pending';
-  const check = payroll.VerifySchema(payroll);
+  const payrolldb = new PayrollsModel(payroll);
+  const check = payrolldb.VerifySchema(payroll);
+
   if (!check.success) {
     Logger.warn('Payroll data is not valid');
     res.status(400).send({ err: check.err, msg: 'Payroll data is not valid' });
     return;
   }
-  await payroll.save();
-  res.status(200).send({ msg: 'payroll added', payroll: payroll.ToClient() });
+  await payrolldb.save();
+  res.status(200).send({ msg: 'payroll added', payroll: payrolldb.ToClient() });
 };
 
 // Fuction of the route: PUT /api/v1/payrolls
@@ -208,4 +202,3 @@ export const putPayrolls = async (req: Request, res: Response) => {
 };
 
 // only the route is missing to delete a payroll
-

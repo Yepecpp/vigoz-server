@@ -1,0 +1,11 @@
+{
+  "payroll": {
+    "employee": "63c4c1af94824f767a511eb8",
+    "values": {
+      "extra": 5000
+    },
+    "process": {
+      "status": "pending"
+    }
+  }
+}

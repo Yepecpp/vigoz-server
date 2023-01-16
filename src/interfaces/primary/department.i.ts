@@ -9,7 +9,7 @@ export const departmentZod = z.object({
   name: z.string(),
   description: z.string().optional(),
   phone: z.string().optional(),
-  branch: branchZod || z.string(),
+  branch: branchZod.optional().or(z.string()),
 });
 
 export type IDepartment = z.infer<typeof departmentZod>;

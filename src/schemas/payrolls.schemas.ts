@@ -56,8 +56,18 @@ payrollsSchema.methods.VerifySchema = function (Pdata?: IPayroll | payrollDocume
   err?: ReturnType<typeof zoderr>;
   data?: IPayroll;
 } {
-  const data = (Pdata as any) || (this as any);
-  const check = payrollZod.safeParse(data);
+  if (!Pdata) {
+    Pdata = this as IPayroll;
+  }
+  // log the instance of Pdata
+  console.log(Pdata instanceof mongoose.Document);
+  //REMOVE THE INSTANCE OF MONGOOSE DOCUMENT
+  if (Pdata instanceof mongoose.Document) {
+    Pdata = Pdata.toObject();
+  }
+  Pdata.employee = Pdata?.employee?.toString();
+  Pdata.process.processedBy = Pdata?.process?.processedBy?.toString();
+  const check = payrollZod.safeParse(Pdata);
   if (!check.success) {
     return { success: false, err: zoderr(check.error) };
   }
@@ -65,14 +75,14 @@ payrollsSchema.methods.VerifySchema = function (Pdata?: IPayroll | payrollDocume
 };
 payrollsSchema.methods.ToClient = function (): IPayroll {
   const curr = this as any;
+  curr.process.processedBy = curr.process.processedBy.toString();
   const payroll = {
     id: curr._id.toString(),
     period: curr.period,
-    employee: curr.employee,
+    employee: curr.employee.toString(),
     values: curr.values,
     createdAt: curr.createdAt,
     process: curr.process,
   };
   return payroll;
 };
-

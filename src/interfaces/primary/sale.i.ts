@@ -9,7 +9,7 @@ export const saleZod = z.object({
   id: z.string().nullish(),
   date: z.date().default(new Date()),
   amount: z.object({
-    total: z.number().positive(),
+    total: z.number().min(0),
     fromStorage: storageZod || z.string().nullish(),
   }),
   state: z.object({
@@ -19,8 +19,8 @@ export const saleZod = z.object({
   }),
 
   value: z.object({
-    total: z.number().positive(),
-    indivudual: z.number().positive(),
+    total: z.number().min(0),
+    indivudual: z.number().min(0),
     currency: currencyZod,
   }),
   sellerEmp: employeeZod || z.string().nullish(),

@@ -18,7 +18,6 @@ departmentsSchema.methods.VerifySchema = function (Ddata?: IDepartment | departm
     Ddata = this;
   }
   let parse = departmentZod.safeParse(Ddata);
-  console.log(parse);
   if (!parse.success) {
     return { success: false, err: zoderr(parse.error) };
   }

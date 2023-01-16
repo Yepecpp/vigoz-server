@@ -48,7 +48,7 @@ export const postUsers = async (req: Request, res: Response) => {
     });
     return;
   }
-  if (!user.createdAt) {
+  if (user.isNew) {
     user.createdAt = new Date(Date.now());
     user.status = 'active';
     user.login.passw = await Encrypt.hash(user.login.passw);

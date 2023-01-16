@@ -17,10 +17,10 @@ export const expenseZod = z.object({
     status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
     updated: z.date().default(new Date()),
   }),
-  creatorEmp: employeeZod || z.string(),
+  creatorEmp: employeeZod.optional().or(z.string()),
   method: z.enum(['cash', 'bank', 'credit card']),
   destination: z.enum(['employees', 'providers']),
-  destinationData: providerZod || employeeZod || z.string().optional(),
+  destinationData: providerZod.optional() || employeeZod.optional().or(z.string()).optional(),
 });
 
 export type IExpense = z.infer<typeof expenseZod>;

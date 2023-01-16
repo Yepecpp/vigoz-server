@@ -18,7 +18,7 @@ const zoderr = (errs: any): parseZ_err[] => {
         received: err.received,
       },
       where: err.path.join('.'),
-      isReq: err.message.includes('required'),
+      isReq: err.message,
     });
   });
   return result;
