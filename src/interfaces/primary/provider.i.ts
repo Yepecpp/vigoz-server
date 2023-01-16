@@ -5,7 +5,7 @@ import zoderr from '@utils/zoderr';
 export const providerZod = z.object({
   id: z.string().optional(),
   name: z.string(),
-  email: z.string().email(),
+  email: z.string().min(1, "email can't be empty").email('This is not a valid email'),
   phone: z.string().optional(),
   address: addressZod,
   description: z.string().optional(),
