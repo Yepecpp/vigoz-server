@@ -4,7 +4,7 @@ import { employeeZod } from './employee.i';
 import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
 export const productionZod = z.object({
-  id: z.string().uuid().nullish(),
+  id: z.string().nullish(),
   date: z.date().default(new Date()),
   product: z.object({
     type: z.enum(['Ice', 'Bags']).default('Ice'),

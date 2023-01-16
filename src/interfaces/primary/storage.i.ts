@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
 export const storageZod = z
   .object({
-    id: z.string().uuid().nullish(),
+    id: z.string().nullish(),
     name: z.string(),
     category: z.string(),
     status: z.enum(['active', 'inactive', 'Damaged']).default('active'),

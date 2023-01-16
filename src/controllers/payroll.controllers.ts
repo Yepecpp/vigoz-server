@@ -2,53 +2,56 @@ import { Response } from 'express';
 import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
 import PayrollsModel from '@models/payrolls.models';
-
+import { IPayroll } from '@interfaces/primary/payroll.i';
+import EmployeesModel from '@models/employees.models';
+const salaryType = [
+  { value: 34685.0, percent: 0 },
+  { value: 52027.42, percent: 0 },
+  { value: 72260.25, percent: 0 },
+];
+const socialTypes = {
+  health: {
+    percentage: 3.04,
+  },
+  pension: {
+    percentage: 0,
+  },
+};
 // Fuction for set the payroll values (deductions, taxes, etc)
-const deductions = (payroll) => {
-  const salary = payroll.values.salary;
-  const salaryType = {
-    exempt: 34685.0,
-    rentOne: 52027.42,
-    rentTwo: 72260.25,
+const deductions = (payroll: IPayroll, totalSalary: number) => {
+  const values = payroll.values;
+  const salaryBfTax = values.salary + values.extra;
+  const selectedType = salaryType
+    .sort((a, b) => b.value - a.value)
+    .find((s) => s.value < totalSalary);
+  const taxPercentage = selectedType ? selectedType.percent : 0;
+  values.tax = {
+    percentage: taxPercentage,
+    amount: salaryBfTax * (taxPercentage / 100),
   };
-  let twentyfivePercent,
-    twentyPercent,
-    surplus = 0;
-
-  payroll.values.social.health.amount =
-    payroll.values.salary * payroll.values.social.health.percentage;
-  payroll.values.social.pension.amount =
-    payroll.values.salary * payroll.values.social.pension.percentage;
-  payroll.values.social.total.amount =
-    payroll.values.social.health.amount + payroll.values.social.pension.amount;
-  payroll.values.social.total.percentage =
-    payroll.values.social.health.percentage + payroll.values.social.pension.percentage;
-
-  if (salary > salaryType.rentTwo) {
-    surplus = salary - salaryType.rentTwo;
-    twentyfivePercent = surplus * 0.25;
-    payroll.values.tax.amount = 79776.0 + twentyfivePercent;
-  }
-
-  if (salary > salaryType.rentOne && salary <= salaryType.rentTwo) {
-    surplus = salary - salaryType.rentOne;
-    twentyPercent = surplus * 0.2;
-    payroll.values.tax.amount = 31216.0 + twentyPercent;
-  }
-
-  if (salary > salaryType.exempt && salary <= salaryType.rentOne) {
-    surplus = salary - salaryType.exempt;
-    payroll.values.tax.amount = surplus * 0.15;
-  }
-
-  payroll.values.tax.percentage = 0;
-  payroll.values.netAmount =
-    salary - payroll.values.social.total.amount - payroll.values.tax.amount;
+  values.social = {
+    health: {
+      percentage: socialTypes.health.percentage,
+      amount: salaryBfTax * (socialTypes.health.percentage / 100),
+    },
+    pension: {
+      percentage: socialTypes.pension.percentage,
+      amount: salaryBfTax * (socialTypes.pension.percentage / 100),
+    },
+    total: {
+      percentage: socialTypes.health.percentage + socialTypes.pension.percentage,
+      amount:
+        salaryBfTax * ((socialTypes.health.percentage + socialTypes.pension.percentage) / 100),
+    },
+  };
+  values.netAmount = salaryBfTax - values.tax.amount - values.social.total.amount;
+  return values;
 };
 
 // Fuction of the route: GET /api/v1/payrolls
 export const getPayrolls = async (req: Request, res: Response) => {
   //this is where we get all the payrolls;
+
   if (req.auth?.role === undefined || req.auth.role > 1) {
     Logger.warn('no permission to access this route');
     res.status(401).send({ msg: 'no permission to access this route' });
@@ -69,20 +72,80 @@ export const postPayrolls = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
+  /*here we recive {
+    payroll:{
+      employee: string,
+      values:{
+        currency: {
+          code: string,
+          name: string,
+          symbol: string
+        }
+        extra: number,
+      }
+      process:{
+        status: string
+      }
+  }
+  */
   const payroll = new PayrollsModel(req.body.payroll);
-  deductions(payroll);
+  // here we check if the employee exists
+  const employee = await EmployeesModel.findById(payroll.employee);
+  if (!employee) {
+    Logger.warn('cant add payroll because employee doesnt exist');
+    res.status(404).send({
+      msg: 'cant add payroll because employee doesnt exist',
+      err: {
+        code: 404,
+        expected: 'string',
+        recived: payroll.employee,
+      },
+      where: 'employee',
+    });
+    return;
+  }
+  const lastPayroll = await PayrollsModel.findOne({ employee: payroll.employee }).sort({
+    createdAt: -1,
+  });
+  if (lastPayroll) {
+    if (lastPayroll.process.status === 'pending') {
+      Logger.warn('cant add payroll because employee has a pending payroll');
+      res.status(400).send({
+        msg: 'cant add payroll because employee has a pending payroll',
+        err: {
+          code: 400,
+          expected: 'string',
+          recived: payroll.employee,
+        },
+        where: 'employee',
+      });
+      return;
+    }
+    if (lastPayroll.period === payroll.period) {
+      payroll.values.salary = employee.salary.amounts[1] ? employee.salary.amounts[1] : 0;
+    }
+  } else {
+    payroll.values.salary = employee.salary.amounts[0] ? employee.salary.amounts[0] : 0;
+  }
+  // here we insert the values of the employee salary
   payroll.process.processedBy = req.auth.employee?._id;
-
-  const check = payroll.VerifySchema();
-
-  //   TODO: we have a problem here, check.err is does not exist
+  payroll.values.extra = payroll.values.extra ? payroll.values.extra : 0;
+  // here we calculate the payroll,
+  payroll.values = deductions(
+    payroll,
+    employee.salary.amounts.reduce((a, b) => a + b, 0),
+  );
+  payroll.values.currency = payroll.values.currency
+    ? employee.salary.currency
+    : payroll.values.currency;
+  // here we set the status of the payroll
+  payroll.process.status = payroll.process.status ? payroll.process.status : 'pending';
+  const check = payroll.VerifySchema(payroll);
   if (!check.success) {
     Logger.warn('Payroll data is not valid');
-    Logger.warn(check.err);
     res.status(400).send({ err: check.err, msg: 'Payroll data is not valid' });
     return;
   }
-
   await payroll.save();
   res.status(200).send({ msg: 'payroll added', payroll: payroll.ToClient() });
 };
@@ -90,7 +153,7 @@ export const postPayrolls = async (req: Request, res: Response) => {
 // Fuction of the route: PUT /api/v1/payrolls
 export const putPayrolls = async (req: Request, res: Response) => {
   //this is where we update a payroll
-  if (req.auth?.role === undefined || req.auth.role > 1) {
+  if (req.auth?.role === undefined || req.auth.role !== 0) {
     Logger.warn('no permission to access this route');
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
@@ -99,32 +162,45 @@ export const putPayrolls = async (req: Request, res: Response) => {
   const payroll = await PayrollsModel.findById(req.body.payroll.id);
 
   if (!payroll) {
-    Logger.warn("cant update this department beacuse it doesn't exists");
+    Logger.warn("cant update this payroll beacuse it doesn't exists");
     res.status(404).send({
-      msg: "cant update this department beacuse it doesn't exists",
+      msg: "cant update this payroll beacuse it doesn't exists",
+      err: {
+        code: 404,
+        expected: 'string',
+        recived: req.body.payroll.id,
+      },
+      where: 'id',
     });
     return;
   }
-
-  if (req.body.payroll.values.netAmount !== payroll.values.netAmount) {
-    deductions(payroll);
+  const newdata = req.body.payroll as IPayroll;
+  const employee = await EmployeesModel.findById(payroll.employee);
+  if (!employee) {
+    Logger.warn('cant update payroll because employee doesnt exist');
+    res.status(404).send({
+      msg: 'cant update payroll because employee doesnt exist',
+      err: {
+        code: 404,
+        expected: 'string',
+        recived: payroll.employee,
+      },
+      where: 'employee',
+    });
+    return;
   }
-
-  const newdata = req.body.payroll;
   const check = payroll.VerifySchema(newdata);
-
-  //   TODO: we have a problem here, check.err is does not exist
   if (!check.success) {
     Logger.warn('payroll data is not valid');
-    Logger.warn(check.err);
     res.status(400).send({ err: check.err, msg: 'Payroll data is not valid' });
     return;
   }
-
-  payroll.period = newdata.period;
-  payroll.employee = newdata.employee;
-  payroll.values = newdata.values;
-  payroll.createdAt = newdata.createdAt;
+  if (newdata.values.extra !== payroll.values.extra) {
+    payroll.values = deductions(
+      payroll,
+      employee.salary.amounts.reduce((a, b) => a + b, 0),
+    );
+  }
   payroll.process = newdata.process;
 
   await payroll.save();
@@ -132,3 +208,4 @@ export const putPayrolls = async (req: Request, res: Response) => {
 };
 
 // only the route is missing to delete a payroll
+

@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { addressZod } from '@interfaces/common/address.i';
 import zoderr from '@utils/zoderr';
 export const providerZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   email: z.string().email(),
   phone: z.string().optional(),

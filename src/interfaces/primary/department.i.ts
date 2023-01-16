@@ -5,7 +5,7 @@ import zoderr from '@utils/zoderr';
 import { branchZod } from './branch.i';
 
 export const departmentZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   description: z.string().optional(),
   phone: z.string().optional(),

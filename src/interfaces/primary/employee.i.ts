@@ -16,7 +16,7 @@ export enum Roles {
 const eRoles = Convert.convertToTuple(Object.keys(Object.create(Roles)));
 
 export const employeeZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   user: userZod || z.string(),
   address: addressZod,
   identity: identityZod,
@@ -32,9 +32,9 @@ export const employeeZod = z.object({
   }),
   gender: z.enum(['male', 'female', 'other']).default('other'),
   salary: z.object({
-    amount: z.number(),
+    amounts: z.array(z.number()).max(2).min(1),
     currency: currencyZod,
-    period: z.enum(['hourly', 'dayly', 'fortnightly', 'weekly', 'monthly']).default('fortnightly'),
+    period: z.string().default('fortnightly'),
   }),
   department: departmentZod || z.string(),
   role: z.enum(eRoles).default('staff'),

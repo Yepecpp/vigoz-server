@@ -5,7 +5,7 @@ import { currencyZod } from '@interfaces/common/currency.i';
 import zoderr from '@utils/zoderr';
 import { providerZod } from './provider.i';
 export const expenseZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   category: z.string(),
   description: z.string(),
   amount: z.object({

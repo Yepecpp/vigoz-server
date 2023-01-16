@@ -6,7 +6,7 @@ import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
 
 export const clientZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   address: addressZod || z.string(),
   user: userZod || z.string().nullish(),

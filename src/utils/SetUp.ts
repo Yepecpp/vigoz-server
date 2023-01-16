@@ -65,7 +65,7 @@ const CheckEmployee = async (id: mongoose.Types.ObjectId, depid: mongoose.Types.
   const employee = new EmployeesModel({
     department: depid,
     salary: {
-      amount: 0,
+      amounts: [10000, 9000],
       currency: {
         name: 'Dominican Peso',
         symbol: '$',

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { loginZod } from '../common/login.i';
 import zoderr from '@utils/zoderr';
 export const userZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   last_name: z.string(),
   login: loginZod,

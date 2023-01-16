@@ -4,7 +4,7 @@ import { currencyZod } from '@interfaces/common/currency.i';
 import { Document } from 'mongoose';
 
 export const companyZod = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().optional(),
   name: z.string(),
   address: addressZod,
   phone: z.string(),

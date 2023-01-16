@@ -9,7 +9,7 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
     required: true,
   },
   salary: {
-    amount: { type: Number, required: true, positive: true },
+    amounts: [{ type: Number, required: true }],
     currency: {
       name: { type: String, required: true },
       symbol: { type: String, required: true },

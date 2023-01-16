@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import Middleware from '@utils/middleware';
-import { getUsers, postUsers, putUsers, deleteUsers } from '@controllers/user.controller';
+import { getUsers, postUsers, putUsers, deleteUsers } from '@controllers/user.controllers';
 
 const router = Router();
 

@@ -6,16 +6,16 @@ import { currencyZod } from '@interfaces/common/currency.i';
 import { clientZod } from './client.i';
 import { storageZod } from './storage.i';
 export const saleZod = z.object({
-  id: z.string().uuid().nullish(),
+  id: z.string().nullish(),
   date: z.date().default(new Date()),
   amount: z.object({
     total: z.number().positive(),
-    fromStorage: storageZod || z.string().uuid().nullish(),
+    fromStorage: storageZod || z.string().nullish(),
   }),
   state: z.object({
     status: z.enum(['pending', 'approved', 'canceled']).default('pending'),
     updated: z.date().default(new Date()),
-    handledBy: employeeZod || z.string().uuid().nullish(),
+    handledBy: employeeZod || z.string().nullish(),
   }),
 
   value: z.object({
@@ -23,10 +23,10 @@ export const saleZod = z.object({
     indivudual: z.number().positive(),
     currency: currencyZod,
   }),
-  sellerEmp: employeeZod || z.string().uuid().nullish(),
+  sellerEmp: employeeZod || z.string().nullish(),
   destination: z.object({
     type: z.enum(['client', 'unoficial', 'distribution']).default('unoficial'),
-    clients: z.array(clientZod || z.string().uuid().nullish()),
+    clients: z.array(clientZod || z.string().nullish()),
   }),
 });
 

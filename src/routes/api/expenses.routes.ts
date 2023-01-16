@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getExpenses, postExpenses } from '@controllers/expense.controller';
+import { getExpenses, postExpenses } from '@controllers/expense.controllers';
 
 const router = Router();
 

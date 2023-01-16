@@ -2,6 +2,7 @@ import { Response } from 'express';
 import EmployeesModel from '@models/employees.models';
 import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
+import DepartmentModel from '@models/departments.models';
 
 // Fuction of the route: GET /api/v1/employees
 export const getEmployee = async (req: Request, res: Response) => {
@@ -18,7 +19,31 @@ export const getEmployee = async (req: Request, res: Response) => {
 // Fuction of the route: POST /api/v1/employees
 export const postEmployee = async (req: Request, res: Response) => {
   //this is where we create a new employee;
+  if (req.auth?.role === undefined || req.auth.role > 1) {
+    Logger.warn('no permission to access this route');
+    res.status(401).send({ msg: 'no permission to access this route' });
+    return;
+  }
   const employee = new EmployeesModel(req.body.employee);
+  if (!employee.salary.currency) {
+    const department = await DepartmentModel.findById(employee.department)
+      .populate('branches')
+      .populate('companies');
+    if (!department) {
+      Logger.warn('cant add employee because department doesnt exist');
+      res.status(404).send({
+        msg: 'cant add employee because department doesnt exist',
+        err: {
+          code: 404,
+          expected: 'string',
+          recived: employee.department,
+        },
+        where: 'department',
+      });
+      return;
+    }
+    employee.salary.currency = department.branch.company.currencies.default;
+  }
   const check = employee.VerifySchema();
 
   if (!check.success) {
