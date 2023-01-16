@@ -15,7 +15,7 @@ export enum Roles {
 
 export const employeeZod = z.object({
   id: z.string().optional(),
-  user: userZod.optional().or(z.string()),
+  user: userZod.or(z.string()),
   address: addressZod,
   identity: identityZod,
   birthDate: z.date().or(z.string()),
@@ -34,7 +34,7 @@ export const employeeZod = z.object({
     currency: currencyZod,
     period: z.string(),
   }),
-  department: departmentZod.optional().or(z.string()),
+  department: departmentZod.or(z.string()),
   role: z.enum(['admin', 'supervisor', 'staff']).default('staff'),
 });
 

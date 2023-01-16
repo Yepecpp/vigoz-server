@@ -16,17 +16,17 @@ export const getDeparment = async (_req: Request, res: Response) => {
 // Fuction of the route: POST /api/v1/department
 export const postDepartment = async (req: Request, res: Response) => {
   //this is where we register a new department
-  const department = new DeparmentModel(req.body.department);
+  const newdepartment = req.body.department;
   const branch = await BranchesModel.findOne();
-
   if (!branch) {
     Logger.warn('branch not found');
     res.status(404).send({ msg: 'branch not found' });
     return;
   }
 
-  department.branch = branch._id.toString();
-  const check = department.VerifySchema();
+  newdepartment.branch = branch._id.toString();
+  const department = new DeparmentModel(newdepartment);
+  const check = department.VerifySchema(newdepartment);
 
   if (!check.success) {
     Logger.warn('Department data is not valid');

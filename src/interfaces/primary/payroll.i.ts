@@ -9,7 +9,7 @@ export const payrollZod = z.object({
     const date = new Date();
     return `${date.getMonth() + 1}-${date.getFullYear()}`;
   }),
-  employee: employeeZod.optional().or(z.string()),
+  employee: employeeZod.or(z.string()),
   values: z.object({
     currency: currencyZod,
     salary: z.number().min(0),
@@ -38,7 +38,7 @@ export const payrollZod = z.object({
   process: z.object({
     status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
     updatedAt: z.date().default(new Date()),
-    processedBy: employeeZod.optional().or(z.string()),
+    processedBy: employeeZod.or(z.string()),
   }),
 });
 export type IPayroll = z.infer<typeof payrollZod>;

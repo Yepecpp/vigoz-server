@@ -17,16 +17,15 @@ export const getBranch = async (_req: Request, res: Response) => {
 
 // Fuction of the route: POST /api/v1/branches
 export const postBranch = async (req: Request, res: Response) => {
-  const branch = new BranchesModel(req.body.branch);
-  const check = branch.VerifySchema();
-
+  const newbranch = req.body.branch;
+  const branch = new BranchesModel(newbranch);
+  const check = branch.VerifySchema(newbranch);
   if (!check.success) {
     Logger.warn('branch data is not valid');
     Logger.warn(check.err);
     res.status(400).send({ msg: 'branch data is not valid', err: check.err });
     return;
   }
-
   await branch.save();
   res.status(201).send({ msg: 'branch added', branch: branch.ToClient() });
 };

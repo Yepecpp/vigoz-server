@@ -17,9 +17,9 @@ export const getClient = async (_req: Request, res: Response) => {
 
 // Fuction of the route: POST /api/v1/clients
 export const postClient = async (req: Request, res: Response) => {
-  const client = new ClientsModel(req.body.client);
-  const check = client.VerifySchema();
-
+  const newclient = req.body.client;
+  const client = new ClientsModel(newclient);
+  const check = client.VerifySchema(newclient);
   if (!check.success) {
     Logger.warn('client data is not valid');
     Logger.warn(check.err);

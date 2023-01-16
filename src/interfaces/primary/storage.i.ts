@@ -12,7 +12,7 @@ export const storageZod = z
     currentCapacity: z.number().min(0).default(0),
     createdAt: z.date().nullish(),
     updatedAt: z.date().nullish(),
-    branch: branchZod.optional().or(z.string()).nullish(),
+    branch: branchZod.or(z.string()),
   })
   .refine((value) => value.maxCapacity > value.currentCapacity, {
     message: 'currentCapacity cannot be greater than maxCapacity',

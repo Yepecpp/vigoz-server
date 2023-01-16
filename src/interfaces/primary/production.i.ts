@@ -10,8 +10,8 @@ export const productionZod = z.object({
     type: z.enum(['Ice', 'Bags']).default('Ice'),
     quantity: z.number().min(0).default(0),
   }),
-  storage: storageZod.optional().or(z.string()).nullish(),
-  employee: employeeZod.optional().or(z.string()).nullish(),
+  storage: storageZod.or(z.string()),
+  employee: employeeZod.or(z.string()),
 });
 export type IProduction = z.infer<typeof productionZod>;
 export type productionDocument = IProduction &
