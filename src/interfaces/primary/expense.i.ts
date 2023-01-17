@@ -20,7 +20,7 @@ export const expenseZod = z.object({
   creatorEmp: employeeZod.or(z.string()),
   method: z.enum(['cash', 'bank', 'credit card']),
   destination: z.enum(['employees', 'providers']),
-  destinationData: providerZod.or(employeeZod.or(z.string())),
+  destinationData: providerZod.or(employeeZod).or(z.string()),
 });
 
 export type IExpense = z.infer<typeof expenseZod>;

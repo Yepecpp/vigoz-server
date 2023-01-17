@@ -10,7 +10,7 @@ function CreateOptions(): any {
     };
     return { MONGO_URI, options };
   }
-  const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&retryWrites=true&w=majority`;
+  const MONGO_URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&retryWrites=true&w=majority`;
   const options: any = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
