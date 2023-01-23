@@ -4,6 +4,6 @@ export const identityZod = z.object({
   number: z.string(),
   expiration: z.date().or(z.string()),
   country: z.string(),
-  state: z.string(),
+  state: z.enum(['active', 'inactive']).default('active'),
 });
 export type IIdentity = z.infer<typeof identityZod>;

@@ -8,18 +8,11 @@ import zoderr from '@utils/zoderr';
 export const clientZod = z.object({
   id: z.string().optional(),
   name: z.string(),
-  address: addressZod || z.string(),
+  address: addressZod,
   user: userZod.or(z.string()),
   identity: z.object({
     type: z.enum(['Fisical', 'Company']).default('Company'), //could be a normal civilian or a company
-    identity:
-      identityZod ||
-      z.object({
-        name: z.string(),
-        address: addressZod,
-        phone: z.string(),
-        email: z.string(),
-      }),
+    identity: identityZod,
   }),
   rnc: z.string(),
   phone: z.string(),
