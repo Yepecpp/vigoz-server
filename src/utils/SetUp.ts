@@ -53,6 +53,7 @@ const CheckAdmin = async () => {
     last_name: 'admin',
     phone: '0000000000',
     status: 'active',
+    is_verified: true,
   });
   await admin.save();
   Logger.info('Admin created');
@@ -64,11 +65,16 @@ const CheckEmployee = async (id: mongoose.Types.ObjectId, depid: mongoose.Types.
   const employee = new EmployeesModel({
     department: depid,
     salary: {
-      amount: 0,
-      currency: 'DOP',
+      amounts: [10000, 9000],
+      currency: {
+        name: 'Dominican Peso',
+        symbol: '$',
+        code: 'DOP',
+      },
+      period: 'fortnightly',
     },
     identity: {
-      type: 'ID',
+      type: 'id',
       number: '0000000000',
       expiration: new Date(),
       country: 'Dominican Republic',
@@ -80,6 +86,16 @@ const CheckEmployee = async (id: mongoose.Types.ObjectId, depid: mongoose.Types.
       city: 'admin',
       zip: '00000',
     },
+    birthDate: new Date(),
+    details: {
+      position: 'gay',
+      type: 'fulltime',
+      contract: {
+        hireday: new Date(),
+        Id: 'errhueso000',
+      },
+    },
+    gender: 'male',
     user: id,
     role: 'admin',
     status: 'active',

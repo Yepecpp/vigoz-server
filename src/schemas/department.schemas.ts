@@ -5,7 +5,7 @@ import { departmentZod, departmentDocument, IDepartment } from '@interfaces/prim
 export const departmentsSchema = new mongoose.Schema<departmentDocument>({
   name: { type: String, required: true },
   description: { type: String, required: false }, // I commented this out because it was causing an error
-  branch: { type: String, required: true }, // || { type: mongoose.Schema.Types.ObjectId, ref: 'branches', required: false }
+  branch: { type: mongoose.Schema.Types.ObjectId, ref: 'branches', required: true },
   phone: { type: String, required: false },
 });
 
@@ -18,7 +18,6 @@ departmentsSchema.methods.VerifySchema = function (Ddata?: IDepartment | departm
     Ddata = this;
   }
   let parse = departmentZod.safeParse(Ddata);
-  console.log(parse);
   if (!parse.success) {
     return { success: false, err: zoderr(parse.error) };
   }

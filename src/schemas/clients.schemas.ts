@@ -1,12 +1,19 @@
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 import { IClient, clientDocument, clientZod } from '@interfaces/primary/client.i';
-
+import { address, identity } from './common';
 export const clientsSchema = new mongoose.Schema<clientDocument>({
   name: { type: String, required: true },
-  address: { type: Object, required: true } || { type: String, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  identity: { type: Object, required: true } || { type: String, required: true },
+  address: address,
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: false },
+  identity: {
+    type: {
+      type: String,
+      enum: ['Fisical', 'Company'],
+      default: 'Company',
+    },
+    identity: identity,
+  },
   phone: { type: String, required: true },
   rnc: { type: String, required: true },
 });
@@ -26,7 +33,7 @@ clientsSchema.methods.VerifySchema = function (Cdata?: clientDocument): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 

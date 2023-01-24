@@ -1,10 +1,10 @@
 import { CompanyDocument, ICompany, companyZod } from '@interfaces/primary/company.i';
 import zoderr from '@utils/zoderr';
 import mongoose from 'mongoose';
-
+import { address } from './common';
 export const companiesSchema = new mongoose.Schema<CompanyDocument>({
   name: { type: String, required: true },
-  address: { type: Object, required: true },
+  address: address,
   phone: { type: String, required: true },
   email: { type: String, required: true },
   website: { type: String, required: false },
@@ -36,7 +36,7 @@ companiesSchema.methods.VerifySchema = function (Cdata?: CompanyDocument): {
   }
   return {
     success: false,
-    err: zoderr(parse),
+    err: zoderr(parse.error),
   };
 };
 

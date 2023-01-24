@@ -10,7 +10,7 @@ function CreateOptions(): any {
     };
     return { MONGO_URI, options };
   }
-  const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&retryWrites=true&w=majority`;
+  const MONGO_URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_SOURCE}&retryWrites=true&w=majority`;
   const options: any = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -20,6 +20,7 @@ function CreateOptions(): any {
 const { MONGO_URI, options } = CreateOptions();
 async function Checkcon(): Promise<Mongoose> {
   mongoose.set('strictQuery', true);
+  mongoose.set('strictPopulate', false);
   return mongoose.connect(MONGO_URI, options as ConnectOptions);
 }
 

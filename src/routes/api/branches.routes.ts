@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getBranch, postBranch, putBranch } from '@controllers/branch.controller';
+import { getBranch, postBranch, putBranch } from '@controllers/branch.controllers';
 
 const router = Router();
 
@@ -10,4 +10,3 @@ router.post('/', postBranch);
 router.put('/', putBranch);
 
 export default router;
-
