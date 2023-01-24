@@ -36,20 +36,18 @@ const Middleware = {
   },
   VerifyToken: async (req: PrivReq, _: Response, next: NextFunction) => {
     //remove Bearer from token
-    const token = (req.headers.authorization ? (req.headers.authorization as string) : null)?.split(
-      ' ',
-    )[1];
+    const token = (req.headers.authorization ? (req.headers.authorization as string) : null)?.split(' ')[1];
     // set the log data to the request
-    req.logData = {
-      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-      url: req.originalUrl,
-    };
-    if (!token) {
+    if (!token || token == 'null') {
       Logger.warn('no token provided on middle', req.logData);
       req.auth = null;
       next();
       return;
     }
+    req.logData = {
+      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      url: req.originalUrl,
+    };
 
     const decoded: any = jwt.verify(token);
     if (decoded.status.isExpired === true) {

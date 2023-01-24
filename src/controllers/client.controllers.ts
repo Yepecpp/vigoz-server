@@ -18,11 +18,16 @@ export const getClient = async (_req: Request, res: Response) => {
 // Fuction of the route: POST /api/v1/clients
 export const postClient = async (req: Request, res: Response) => {
   const newclient = req.body.client;
+  if (!newclient) {
+    Logger.warn('no client data provided');
+    res.status(400).send({ msg: 'no client data provided' });
+    return;
+  }
   const client = new ClientsModel(newclient);
   const check = client.VerifySchema(newclient);
+  console.log(check);
   if (!check.success) {
     Logger.warn('client data is not valid');
-    Logger.warn(check.err);
     res.status(400).send({ msg: 'client data is not valid', err: check.err });
     return;
   }

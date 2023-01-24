@@ -38,7 +38,7 @@ export const employeesSchema = new mongoose.Schema<employeeDocument>({
     enum: ['male', 'female', 'other'],
     default: 'other',
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', unique: true },
   role: { type: String, required: true },
 });
 

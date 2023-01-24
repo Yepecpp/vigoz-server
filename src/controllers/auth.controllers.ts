@@ -4,7 +4,7 @@ import jwt from '@libs/jwt';
 import { Response } from 'express';
 import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
-
+import employeesModel from '@models/employees.models';
 // Fuction of the route: POST /api/auth/login
 export const Login = async (req: Request, res: Response) => {
   // this is where we login a user
@@ -45,7 +45,9 @@ export const Login = async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user._id });
   user.login.lastLogin = new Date(Date.now());
   await user.save();
-  res.status(200).send({ msg: 'user logged in', token: token, user: user.ToClient() });
+  const employee = user.is_employee ? (await employeesModel.findOne({ user: user._id }).populate('department'))?.ToClient() : null;
+
+  res.status(200).send({ msg: 'user logged in', token: token, employee, user: user.ToClient(), is_employee: user.is_employee });
 };
 
 // Fuction of the route: GET /api/auth
@@ -64,5 +66,6 @@ export const GetAuth = async (req: Request, res: Response) => {
     token: req.auth.bearer,
     user: req.auth.user.ToClient(),
     is_employee: req.auth.user.is_employee,
+    employee: req.auth.employee?.ToClient(),
   });
 };

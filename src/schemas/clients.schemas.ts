@@ -5,19 +5,14 @@ import { address, identity } from './common';
 export const clientsSchema = new mongoose.Schema<clientDocument>({
   name: { type: String, required: true },
   address: address,
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
-  identity: identity || {
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: false },
+  identity: {
     type: {
       type: String,
       enum: ['Fisical', 'Company'],
       default: 'Company',
     },
-    identity: {
-      name: { type: String, required: true },
-      address: { type: address, required: true },
-      phone: { type: String, required: true },
-      email: { type: String, required: true },
-    },
+    identity: identity,
   },
   phone: { type: String, required: true },
   rnc: { type: String, required: true },
