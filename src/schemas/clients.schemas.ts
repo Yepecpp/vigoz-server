@@ -16,8 +16,13 @@ export const clientsSchema = new mongoose.Schema<clientDocument>({
   },
   phone: { type: String, required: true },
   rnc: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now, mutable: false },
+  updatedAt: { type: Date, default: Date.now },
 });
-
+clientsSchema.pre('save', function (next) {
+  this.updatedAt = new Date();
+  next();
+});
 clientsSchema.methods.VerifySchema = function (Cdata?: clientDocument): {
   success: boolean;
   err?: any;
@@ -47,6 +52,8 @@ clientsSchema.methods.ToClient = function (): IClient {
     identity: curr.identity,
     phone: curr.phone,
     rnc: curr.rnc,
+    updatedAt: curr.updatedAt,
+    createdAt: curr.createdAt,
   };
   return client;
 };

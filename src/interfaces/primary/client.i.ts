@@ -16,8 +16,8 @@ export const clientZod = z.object({
   }),
   rnc: z.string(),
   phone: z.string(),
-  createdAt: z.string().optional(),
-  updatedAt: z.string().optional(),
+  createdAt: z.date().or(z.string()).optional(),
+  updatedAt: z.date().or(z.string()).optional(),
 });
 
 export type IClient = z.infer<typeof clientZod>;

@@ -25,7 +25,6 @@ export const postClient = async (req: Request, res: Response) => {
   }
   const client = new ClientsModel(newclient);
   const check = client.VerifySchema(newclient);
-  console.log(check);
   if (!check.success) {
     Logger.warn('client data is not valid');
     res.status(400).send({ msg: 'client data is not valid', err: check.err });
