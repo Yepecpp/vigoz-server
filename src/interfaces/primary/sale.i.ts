@@ -10,23 +10,23 @@ export const saleZod = z.object({
   date: z.date().default(new Date()),
   amount: z.object({
     total: z.number().min(0),
-    fromStorage: storageZod || z.string().nullish(),
+    fromStorage: storageZod.or(z.string().nullish()),
   }),
   state: z.object({
     status: z.enum(['pending', 'approved', 'canceled']).default('pending'),
     updated: z.date().default(new Date()),
-    handledBy: employeeZod || z.string().nullish(),
+    handledBy: employeeZod.or(z.string().nullish()).optional(),
   }),
 
   value: z.object({
-    total: z.number().min(0),
+    total: z.number().min(0).optional(),
     indivudual: z.number().min(0),
     currency: currencyZod,
   }),
-  sellerEmp: employeeZod || z.string().nullish(),
+  sellerEmp: employeeZod.or(z.string().nullish()),
   destination: z.object({
     type: z.enum(['client', 'unoficial', 'distribution']).default('unoficial'),
-    clients: z.array(clientZod || z.string().nullish()),
+    clients: z.array(clientZod.or(z.string().nullish())).optional(),
   }),
 });
 

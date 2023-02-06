@@ -9,6 +9,8 @@ export const productionsSchema = new mongoose.Schema<productionDocument>({
   },
   storage: { type: mongoose.Schema.Types.ObjectId, ref: 'storages', required: true },
   employee: { type: mongoose.Schema.Types.ObjectId, ref: 'employees', required: true },
+  createdAt: { type: Date, required: true, default: Date.now },
+  updatedAt: { type: Date, required: true, default: Date.now },
 });
 productionsSchema.methods.VerifySchema = function (Udata?: IProduction | productionDocument): {
   success: boolean;
@@ -32,6 +34,8 @@ productionsSchema.methods.ToClient = function (): IProduction {
     product: curr.product,
     storage: curr.storage,
     employee: curr.employee,
+    createdAt: curr.createdAt,
+    updatedAt: curr.updatedAt,
   };
   return production;
 };
