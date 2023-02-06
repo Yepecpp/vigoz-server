@@ -3,11 +3,12 @@ import EmployeesModel from '@models/employees.models';
 import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
 import DepartmentModel from '@models/departments.models';
-
+import { ToQuery } from '@utils/mongooseUtils';
 // Fuction of the route: GET /api/v1/employees
 export const getEmployee = async (req: Request, res: Response) => {
   //this is where we get all the employees;
-  const employees = await EmployeesModel.find(req.query);
+  const query = ToQuery(req.query);
+  const employees = await EmployeesModel.find(query);
   if (!employees) {
     Logger.warn('no employees found');
     res.status(404).send({ msg: 'no employees found' });

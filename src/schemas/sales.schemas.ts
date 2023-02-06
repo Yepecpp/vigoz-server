@@ -2,7 +2,7 @@ import { ISale, saleDocument, saleZod } from '@interfaces/primary/sale.i';
 import mongoose from 'mongoose';
 import zoderr from '@utils/zoderr';
 export const salesSchema = new mongoose.Schema<saleDocument>({
-  date: { type: Date, required: true, default: Date.now },
+  date: { type: Date, required: true, default: Date.now, mutable: false },
   amount: {
     total: { type: Number, required: true },
     fromStorage: { type: mongoose.Schema.Types.ObjectId, ref: 'storages' },
@@ -34,7 +34,7 @@ export const salesSchema = new mongoose.Schema<saleDocument>({
       enum: ['client', 'unoficial', 'distribution'],
       default: 'unoficial',
     },
-    clients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'clients' }],
+    clients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'clients', required: false }],
   },
 });
 salesSchema.methods.VerifySchema = function (Udata?: ISale | saleDocument): {

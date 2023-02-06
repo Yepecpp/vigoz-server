@@ -3,10 +3,13 @@ import DeparmentModel from '@models/departments.models';
 import BranchesModel from '@models/branches.models';
 import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
+import { ToQuery } from '@utils/mongooseUtils';
 
 // Fuction of the route: GET /api/v1/department
-export const getDeparment = async (_req: Request, res: Response) => {
-  const departments = await DeparmentModel.find();
+export const getDeparment = async (req: Request, res: Response) => {
+  //this is where we get all the departments
+  const query = ToQuery(req.query);
+  const departments = await DeparmentModel.find(query);
   res.status(200).send({
     msg: 'departments',
     departments: departments.map((department) => department.ToClient()),

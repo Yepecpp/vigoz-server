@@ -2,19 +2,18 @@ import { Response } from 'express';
 import CompanyModel from '@models/companies.models';
 import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
-
+import { ToQuery } from '@utils/mongooseUtils';
 // Fuction of the route: GET /api/v1/companies
-export const getCompany = async (_req: Request, res: Response) => {
-  const companies = await CompanyModel.find();
+export const getCompany = async (req: Request, res: Response) => {
+  const query = ToQuery(req.query);
+  const companies = await CompanyModel.find(query);
 
   if (!companies) {
     Logger.warn('no companies found');
     res.status(404).send({ msg: 'no companies found' });
     return;
   }
-  res
-    .status(200)
-    .send({ msg: 'companies', companies: companies.map((company) => company.ToClient()) });
+  res.status(200).send({ msg: 'companies', companies: companies.map((company) => company.ToClient()) });
 };
 
 // Fuction of the route: POST /api/v1/companies

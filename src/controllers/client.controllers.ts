@@ -2,11 +2,11 @@ import { Response } from 'express';
 import ClientsModel from '@models/clients.models';
 import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
-
+import { ToQuery } from '@utils/mongooseUtils';
 // Fuction of the route: GET /api/v1/clients
-export const getClient = async (_req: Request, res: Response) => {
-  const clients = await ClientsModel.find();
-
+export const getClient = async (req: Request, res: Response) => {
+  const query = ToQuery(req.query);
+  const clients = await ClientsModel.find(query);
   if (!clients) {
     Logger.warn('no clients found');
     res.status(404).send({ msg: 'no clients found' });
@@ -37,7 +37,7 @@ export const postClient = async (req: Request, res: Response) => {
 
 // Fuction of the route: PUT /api/v1/clients
 export const putClient = async (req: Request, res: Response) => {
-  const client = await ClientsModel.findById(req.body.client._id);
+  const client = await ClientsModel.findById(req.body.client.id);
 
   if (!client) {
     Logger.warn("cant update this client beacuse it doesn't exists");

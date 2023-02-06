@@ -12,6 +12,8 @@ export const productionZod = z.object({
   }),
   storage: storageZod.or(z.string()),
   employee: employeeZod.or(z.string()),
+  createdAt: z.date().default(new Date()),
+  updatedAt: z.date().default(new Date()),
 });
 export type IProduction = z.infer<typeof productionZod>;
 export type productionDocument = IProduction &

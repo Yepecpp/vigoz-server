@@ -2,10 +2,12 @@ import { Response } from 'express';
 import BranchesModel from '@models/branches.models';
 import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
+import { ToQuery } from '@utils/mongooseUtils';
 
 // Fuction of the route: GET /api/v1/branches
-export const getBranch = async (_req: Request, res: Response) => {
-  const branches = await BranchesModel.find();
+export const getBranch = async (req: Request, res: Response) => {
+  let query = ToQuery(req.query);
+  const branches = await BranchesModel.find(query);
 
   if (!branches) {
     Logger.warn('no branches found');

@@ -4,6 +4,7 @@ import { PrivReq as Request } from '@utils/middleware';
 import PayrollsModel from '@models/payrolls.models';
 import { IPayroll } from '@interfaces/primary/payroll.i';
 import EmployeesModel from '@models/employees.models';
+import { ToQuery } from '@utils/mongooseUtils';
 const salaryType = [
   { value: 34685.0, percent: 0 },
   { value: 52027.42, percent: 0 },
@@ -54,7 +55,7 @@ export const getPayrolls = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
-  const query = req.query as any;
+  const query = ToQuery(req.query);
   const payrolls = await PayrollsModel.find(query);
   res.status(200).send({ msg: 'payrolls', payrolls: payrolls.map((payroll) => payroll.ToClient()) });
 };

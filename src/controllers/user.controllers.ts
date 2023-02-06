@@ -3,6 +3,7 @@ import UsersModel from '@models/users.models';
 import Logger from '@libs/logger';
 import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
+import { ToQuery } from '@utils/mongooseUtils';
 // import Middleware from '@utils/middleware';
 
 // Fuction of the route: GET /api/v1/users
@@ -14,6 +15,8 @@ export const getUsers = async (req: Request, res: Response) => {
   }
   let query = req.query as any;
   if (query?.login?.passw) delete query.login.passw;
+  query = ToQuery(query);
+
   const users = await UsersModel.find(query ? query : {});
   res.status(200).send({ msg: 'users', users: users.map((user) => user.ToClient()) });
 };
