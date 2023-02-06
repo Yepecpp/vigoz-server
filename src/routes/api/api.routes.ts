@@ -8,6 +8,7 @@ import clientRoutes from './clients.routes';
 import branchRoutes from './branches.routes';
 import companyRoutes from './company.routes';
 import payrollRoutes from './payrolls.routes';
+import ProviderRoutes from './providers.routes';
 import Middleware from '@utils/middleware';
 const router = Router();
 router.get('/', (_, res: Response) => {
@@ -23,6 +24,7 @@ router.use('/employees', employeeRoutes);
 router.use('/clients', clientRoutes);
 router.use('/branches', branchRoutes);
 router.use('/companies', companyRoutes);
+router.use('/providers', ProviderRoutes);
 router.use('/payrolls', payrollRoutes);
 
 export default router;

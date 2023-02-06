@@ -3,7 +3,7 @@ import { PrivReq as Request } from '@utils/middleware';
 import ProvidersModel from '@models/providers.models';
 import Logger from '@libs/logger';
 import { ToQuery } from '@utils/mongooseUtils';
-export const getPronviers = async (req: Request, res: Response) => {
+export const getProviders = async (req: Request, res: Response) => {
   const query = ToQuery(req.query);
   const providers = await ProvidersModel.find(query);
   res.status(200).send({ msg: 'providers', providers: providers.map((provider) => provider.ToClient()) });
