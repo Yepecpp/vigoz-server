@@ -2,8 +2,9 @@ import { Response } from 'express';
 import { PrivReq as Request } from '@utils/middleware';
 import ProvidersModel from '@models/providers.models';
 import Logger from '@libs/logger';
+import { ToQuery } from '@utils/mongooseUtils';
 export const getPronviers = async (req: Request, res: Response) => {
-  const query = req.query as any;
+  const query = ToQuery(req.query);
   const providers = await ProvidersModel.find(query);
   res.status(200).send({ msg: 'providers', providers: providers.map((provider) => provider.ToClient()) });
 };
@@ -49,3 +50,4 @@ export const putProvider = async (req: Request, res: Response) => {
   await provider.save();
   res.status(200).send({ msg: 'provider updated', provider: provider.ToClient() });
 };
+

@@ -7,12 +7,6 @@ import { ToQuery } from '@utils/mongooseUtils';
 export const getClient = async (req: Request, res: Response) => {
   const query = ToQuery(req.query);
   const clients = await ClientsModel.find(query);
-  // console.log({
-  //   query,
-  //   clients,
-  //   q: req.query.name,
-  //   match: new RegExp(`^${req.query.name}`, 'g').test('jhon'),
-  // });
   if (!clients) {
     Logger.warn('no clients found');
     res.status(404).send({ msg: 'no clients found' });

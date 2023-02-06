@@ -3,9 +3,9 @@ import Logger from '@libs/logger';
 import storagesModel from '@models/storages.models';
 import { PrivReq as Request } from '@utils/middleware';
 import BranchesModel from '@models/branches.models';
-
+import { ToQuery } from '@utils/mongooseUtils';
 export const getStorages = async (req: Request, res: Response) => {
-  const query = req.query as any;
+  const query = ToQuery(req.query);
   const storages = await storagesModel.find(query);
   res.status(200).send({ msg: 'storages', storages: storages.map((storage) => storage.ToClient()) });
 };
@@ -72,3 +72,4 @@ export const putStorage = async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'storage updated', storage: storage.ToClient() });
 };
 
+const getProduction = async (req: Request, res: Response) => {};

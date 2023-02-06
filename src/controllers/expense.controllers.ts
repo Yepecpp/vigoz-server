@@ -6,6 +6,7 @@ import Logger from '@libs/logger';
 import { PrivReq as Request } from '@utils/middleware';
 import ProvidersModel from '@models/providers.models';
 import EmployeesModel from '@models/employees.models';
+import { ToQuery } from '@utils/mongooseUtils';
 
 // Fuction of the route: GET /api/v1/expenses
 export const getExpenses = async (req: Request, res: Response) => {
@@ -15,7 +16,7 @@ export const getExpenses = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no token provided' });
     return;
   }
-  const query = req.query as any;
+  const query = ToQuery(req.query);
   const expenses = await ExpensesModel.find(query);
 
   res.status(200).send({ users: expenses.map((exp) => exp.ToClient()) });
