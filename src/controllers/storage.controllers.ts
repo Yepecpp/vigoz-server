@@ -6,13 +6,15 @@ import { PrivReq as Request } from '@utils/middleware';
 import BranchesModel from '@models/branches.models';
 import { ToQuery } from '@utils/mongooseUtils';
 import productionsModel from '@models/productions.models';
+import { IProduction } from '@interfaces/primary/production.i';
+import { IStorage } from '@interfaces/primary/storage.i';
 export const getStorages = async (req: Request, res: Response) => {
   const query = ToQuery(req.query);
   const storages = await storagesModel.find(query);
   res.status(200).send({ msg: 'storages', storages: storages.map((storage) => storage.ToClient()) });
 };
 export const postStorage = async (req: Request, res: Response) => {
-  const newstorage = req.body.storage;
+  const newstorage = req.body.storage as IStorage;
   const storage = new storagesModel(newstorage);
   const check = storage.VerifySchema(newstorage);
   if (!check.success) {
@@ -40,7 +42,7 @@ export const putStorage = async (req: Request, res: Response) => {
     res.status(401).send({ msg: 'no permission to access this route' });
     return;
   }
-  const newstorage = req.body.storage;
+  const newstorage: IStorage = req.body?.storage satisfies IStorage;
   const storage = await storagesModel.findOne({ _id: newstorage.id });
   if (!storage) {
     Logger.warn('storage not found');
@@ -80,7 +82,7 @@ export const getProduction = async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'production', production: production.map((production) => production.ToClient()) });
 };
 export const postProduction = async (req: Request, res: Response) => {
-  const newproduction = req.body.production;
+  const newproduction = req.body.production as IProduction;
   const production = new productionsModel(newproduction);
   const check = production.VerifySchema(newproduction);
   if (!check.success) {
@@ -108,7 +110,7 @@ export const postProduction = async (req: Request, res: Response) => {
 };
 
 export const putProduction = async (req: Request, res: Response) => {
-  const newproduction = req.body.production;
+  const newproduction: IProduction = req.body.production satisfies IProduction;
   const production = await productionsModel.findById(newproduction.id);
   if (!production) {
     Logger.warn('production not found');

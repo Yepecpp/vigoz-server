@@ -19,7 +19,7 @@ export const getExpenses = async (req: Request, res: Response) => {
   const query = ToQuery(req.query);
   const expenses = await ExpensesModel.find(query);
 
-  res.status(200).send({ users: expenses.map((exp) => exp.ToClient()) });
+  res.status(200).send({ expenses: expenses.map((exp) => exp.ToClient()) });
 };
 const VerifyDestination = async (destination: string, destinationData: string): Promise<boolean> => {
   const model: any = destination === 'employees' ? EmployeesModel : ProvidersModel;
@@ -41,18 +41,8 @@ export const postExpenses = async (req: Request, res: Response) => {
     return;
   }
   await expense.save();
-  return;
-};
-// Fuction of the route: GET /api/v1/expenses/
-export const getExpense = async (req: Request, res: Response) => {
-  //this is where we get a specific expense
-  const id = req.params.id;
-  const expense = await ExpensesModel.findById(id);
-  if (!expense) {
-    res.status(404).send({ msg: 'expense not found' });
-    return;
-  }
   res.status(200).send({ expense: expense.ToClient() });
+  return;
 };
 
 // Fuction of the route: PUT /api/v1/expenses/
@@ -75,5 +65,8 @@ export const putExpense = async (req: Request, res: Response) => {
     return;
   }
   expense.set(newExpense);
+
   await expense.save();
+  res.status(200).send({ expense: expense.ToClient() });
+  return;
 };

@@ -1,11 +1,16 @@
 {
-  "payroll": {
-    "employee": "63c4c1af94824f767a511eb8",
-    "values": {
-      "extra": 5000
+  "todo": {
+    "title": "Bañarme",
+    "description": "Bañarme en la mañana",
+    "status": {
+      "isCompleted": false
     },
-    "process": {
-      "status": "pending"
+    "flags": ["important", "urgent"],
+    "createdBy": {
+      "name": "Juan",
+      "email": "Alberto@gmail.com",
+      "phone": "123456789",
+      "avatar": "https://api.dicebear.com/5.x/pixel-art/svg?seed=John"
     }
   }
 }

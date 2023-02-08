@@ -11,12 +11,13 @@ import payrollRoutes from './payrolls.routes';
 import ProviderRoutes from './providers.routes';
 import salesRoutes from './sales.routes';
 import storagesRoutes from './storages.routes';
+import todosRoutes from './todos.routes';
 import Middleware from '@utils/middleware';
 const router = Router();
 router.get('/', (_, res: Response) => {
   res.send('Hello World from api v1!');
 });
-
+router.use('/todos', todosRoutes);
 router.use('/users', userRoutes);
 router.use('/auth', authRoutes);
 router.use(Middleware.PrivateRoute);
