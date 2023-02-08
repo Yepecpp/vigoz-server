@@ -20,7 +20,7 @@ export const postProvider = async (req: Request, res: Response) => {
   const check = provider.VerifySchema(newprovider);
   if (!check.success) {
     Logger.warn('provider data is not valid');
-    res.status(400).send({ msg: 'provider data is not valid', err: check.error });
+    res.status(400).send({ msg: 'provider data is not valid', err: check.err });
     return;
   }
   await provider.save();
@@ -43,7 +43,7 @@ export const putProvider = async (req: Request, res: Response) => {
   const check = provider.VerifySchema(newprovider);
   if (!check.success) {
     Logger.warn('provider data is not valid');
-    res.status(400).send({ msg: 'provider data is not valid', err: check.error });
+    res.status(400).send({ msg: 'provider data is not valid', err: check.err });
     return;
   }
   provider.set(newprovider);

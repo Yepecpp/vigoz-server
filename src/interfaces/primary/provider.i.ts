@@ -15,7 +15,7 @@ export type providerDocument = IProvider &
   Document & {
     VerifySchema(Udata?: IProvider | providerDocument): {
       success: boolean;
-      error?: ReturnType<typeof zoderr>;
+      err?: ReturnType<typeof zoderr>;
       data?: IProvider;
     };
     ToClient(): IProvider;
