@@ -1,7 +1,8 @@
 import chalk from 'chalk';
 import fs from 'fs';
 import fsAsync from 'fs/promises';
-const logDir = fs.existsSync(__dirname + '/../../logs') ? __dirname + '/../../logs' : undefined;
+import path from 'path';
+const logDir = fs.existsSync(path.join(__dirname, '/../../logs')) ? path.join(__dirname, '/../../logs') : undefined;
 console.log(logDir ? `Logging to ${logDir}` : 'Logging disabled');
 export default class Logger {
   static async info(message: any, reqData?: { ip?: string | string[]; url: string }) {

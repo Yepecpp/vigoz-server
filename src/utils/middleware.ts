@@ -31,6 +31,7 @@ const Middleware = {
   },
   ErrorHandler: (err: Err, __: PrivReq, res: Response<Err>, _: NextFunction) => {
     err = err as Err;
+    Logger.error(err.msg, err.err);
     res.status(err.status || 500).send(err);
     return;
   },

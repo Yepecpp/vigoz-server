@@ -4,6 +4,7 @@ import Logger from '@libs/logger';
 import Encrypt from '@utils/encyrpt';
 import { PrivReq as Request } from '@utils/middleware';
 import { ToQuery } from '@utils/mongooseUtils';
+import { IUser } from '@interfaces/primary/user.i';
 // import Middleware from '@utils/middleware';
 
 // Fuction of the route: GET /api/v1/users
@@ -25,12 +26,23 @@ export const getUsers = async (req: Request, res: Response) => {
 export const postUsers = async (req: Request, res: Response) => {
   //const creator = req.auth? req.auth.user: null;
   //this is where we register a new user
-  const user = new UsersModel(req.body.user);
-  const check = user.VerifySchema();
+  if (req.files) {
+    let images = { ...req.body.user.images };
+    if (Array.isArray(req.files)) {
+      const avatar = req.files.filter((file) => file.fieldname === 'avatar');
+      if (avatar.length > 0) images = { ...images, avatar: 'uploads/' + avatar[0]?.filename };
+    } else {
+      if (req.files.avatar) images = { ...images, avatar: 'uploads/' + req.files.avatar[0]?.filename };
+    }
+    req.body.user.images = images;
+  }
+  let newuser = { ...req.body.user, is_employee: false, is_verified: false } as IUser;
+  const user = new UsersModel(newuser);
+  const check = user.VerifySchema(newuser);
   if (!check.success) {
-    Logger.warn('user data is not valid');
-    Logger.warn(check.error);
-    res.status(400).send({ err: check.error, msg: 'user data is not valid' });
+    Logger.warn('user data is not valid', req.logData);
+    console.log(check.err);
+    res.status(400).send({ err: check.err, msg: 'user data is not valid' });
     return;
   }
   //check if the user name or the email alr exists
@@ -42,7 +54,7 @@ export const postUsers = async (req: Request, res: Response) => {
   const [email, username] = await Promise.all([checkEmail, checkUsername]);
   if (email || username) {
     Logger.warn('user already exists');
-    res.status(402).send({
+    res.status(409).send({
       msg: 'user already exists',
       err: {
         email: email ? 'email already exists' : undefined,
@@ -82,13 +94,25 @@ export const putUsers = async (req: Request, res: Response) => {
     });
     return;
   }
-  const newdata = req.body.user;
+  if (req.files) {
+    let images = { ...user.images };
+    if (Array.isArray(req.files)) {
+      const avatar = req.files.filter((file) => file.fieldname === 'avatar');
+      if (avatar.length > 0) images = { ...images, avatar: 'uploads/' + avatar[0]?.filename };
+    } else {
+      if (req.files.avatar) images = { ...images, avatar: 'uploads/' + req.files.avatar[0]?.filename };
+    }
+    req.body.user.images = images;
+  }
+  let newdata = { ...req.body.user, updatedAt: new Date(), is_employee: user.is_employee, is_verified: user.is_verified } as IUser;
   newdata.login.passw = user.login.passw;
   const check = user.VerifySchema(newdata);
   if (!check.success) {
     Logger.warn('Data is not well formated');
-    res.status(400).send({ err: check.error, msg: 'Data is not well formated' });
+    res.status(400).send({ err: check.err, msg: 'Data is not well formated' });
+    return;
   }
+
   user.login = newdata.login;
   user.name = newdata.name;
   user.last_name = newdata.last_name;

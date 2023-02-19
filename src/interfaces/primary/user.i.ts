@@ -7,17 +7,17 @@ export const userZod = z.object({
   name: z.string(),
   last_name: z.string(),
   login: loginZod,
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.date().or(z.string()).optional(),
+  updatedAt: z.date().or(z.string()).optional(),
   status: z.enum(['active', 'inactive', 'deleted']).default('active'),
   phone: z.string().optional(),
   meta: z.any().nullish(),
   info: z.any().nullish(),
   images: z
     .object({
-      images: z.array(z.string()).optional(),
+      images: z.array(z.string()).max(10).optional(),
       avatar: z.string().optional(),
-      background: z.string().optional(),
+      background: z.array(z.string()).max(5).optional(),
     })
     .optional(), // array of strings
   is_verified: z.boolean().default(false),
@@ -28,7 +28,7 @@ export type userDocument = Document &
   IUser & {
     VerifySchema(Udata?: IUser | userDocument): {
       success: boolean;
-      error?: ReturnType<typeof zoderr>;
+      err?: ReturnType<typeof zoderr>;
       data?: IUser;
     };
     ToClient(): IUser;

@@ -5,6 +5,6 @@ export const loginZod = z.object({
   passw: z.string().min(8),
   // provider is an enum of the providers we support
   provider: z.enum(['local', 'google', 'facebook', 'github']),
-  lastLogin: z.date().default(new Date()),
+  lastLogin: z.date().or(z.string()).default(new Date()),
 });
 export type ILogin = z.infer<typeof loginZod>;

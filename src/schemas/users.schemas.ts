@@ -24,6 +24,11 @@ let UsersSchema = new mongoose.Schema<userDocument>({
     immutable: true,
     default: Date.now,
   },
+  images: {
+    avatar: { type: String, required: false },
+    background: [{ type: String, required: false }],
+    images: [{ type: String, required: false }],
+  },
   updatedAt: { type: Date, required: false, default: Date.now },
   status: { type: String, required: true },
   meta: { type: Object, required: false },
@@ -54,11 +59,12 @@ UsersSchema.methods.ToClient = function (): IUser {
     },
     is_verified: curr.is_verified,
     is_employee: curr.is_employee,
+    images: curr.images ? curr.images : {},
     phone: curr?.phone,
     createdAt: curr.createdAt,
     updatedAt: curr.updatedAt,
     status: curr.status,
-    info: curr.info ? curr.info : null,
+    info: curr.info ? curr.info : {},
   } as IUser;
   return user;
 };

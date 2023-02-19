@@ -1,5 +1,6 @@
-#copiler
+#compiler
 dist
+public/uploads
 #npm
 node_modules
 #logs
