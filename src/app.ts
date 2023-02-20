@@ -6,14 +6,13 @@ import ApiRouter from '@api/api.routes';
 import Middleware from '@utils/middleware';
 // import Helmet from 'helmet';
 import path from 'path';
-
 //consts for express
 dotenv.config();
 const app = express();
 //middleware
-app.use(express.static(path.join(__dirname, '/../public')));
-//app.use(Helmet({}));
 app.use(cors({ origin: '*' }));
+//app.use(Helmet({}));
+app.use(express.static(path.join(__dirname, '/../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //routes
