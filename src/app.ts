@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import ApiRouter from '@api/api.routes';
 import Middleware from '@utils/middleware';
-import Helmet from 'helmet';
+// import Helmet from 'helmet';
 import path from 'path';
 
 //consts for express
@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 //middleware
 app.use(express.static(path.join(__dirname, '/../public')));
-app.use(Helmet());
+//app.use(Helmet({}));
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +26,6 @@ app.get('/hey', (_req, res) => {
 app.use(Middleware.VerifyToken);
 app.use('/api/v1', ApiRouter);
 //error handling
-//app.use(Middleware.NotFound);
+app.use(Middleware.NotFound);
 app.use(Middleware.ErrorHandler);
 export default app;
