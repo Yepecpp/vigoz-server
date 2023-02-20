@@ -14,12 +14,17 @@ export const getStorages = async (req: Request, res: Response) => {
   res.status(200).send({ msg: 'storages', storages: storages.map((storage) => storage.ToClient()) });
 };
 export const postStorage = async (req: Request, res: Response) => {
-  const newstorage = req.body.storage as IStorage;
+  const newstorage = {
+    ...req.body.storage,
+    maxCapacity: Number(req.body.storage.maxCapacity),
+    currentCapacity: Number(req.body.storage.currentCapacity),
+  } as IStorage;
   const storage = new storagesModel(newstorage);
   const check = storage.VerifySchema(newstorage);
   if (!check.success) {
     Logger.warn('storage data is not valid');
-    res.status(400).send({ msg: 'storage data is not valid', err: check.error });
+    console.log(check.err);
+    res.status(400).send({ msg: 'storage data is not valid', err: check.err });
     return;
   }
   if (storage.currentCapacity > storage.maxCapacity) {
@@ -27,12 +32,13 @@ export const postStorage = async (req: Request, res: Response) => {
     res.status(400).send({ msg: 'storage currentCapacity is greater than maxCapacity' });
     return;
   }
-  const branch = BranchesModel.findById(storage.branch);
+  const branch = await BranchesModel.find({});
   if (!branch) {
     Logger.warn('branch not found');
     res.status(404).send({ msg: 'branch not found' });
     return;
   }
+  storage.branch = branch[0]?._id;
   await storage.save();
   res.status(201).send({ msg: 'storage added', storage: storage.ToClient() });
 };
@@ -52,7 +58,7 @@ export const putStorage = async (req: Request, res: Response) => {
   const check = storage.VerifySchema(newstorage);
   if (!check.success) {
     Logger.warn('storage data is not valid');
-    res.status(400).send({ msg: 'storage data is not valid', err: check.error });
+    res.status(400).send({ msg: 'storage data is not valid', err: check.err });
     return;
   }
   if (newstorage.currentCapacity > newstorage.maxCapacity) {

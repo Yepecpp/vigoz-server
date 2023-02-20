@@ -69,3 +69,29 @@ export const GetAuth = async (req: Request, res: Response) => {
     employee: req.auth.employee?.ToClient(),
   });
 };
+export const ChangePassword = async (req: Request, res: Response) => {
+  // this is where we change the password
+  // we get the token from the request header
+  // we verify the token
+  // if it is valid, we change the password
+  if (!req.auth) {
+    Logger.warn('no token provided on auth routes');
+    res.status(401).send({ msg: 'no token provided or token is invalid' });
+    return;
+  }
+  const data = req.body.password;
+  if (!data.old || !data.new) {
+    Logger.warn('old or new password not provided');
+    res.status(400).send({ msg: 'old or new password not provided' });
+    return;
+  }
+  const check = await Encrypt.compare(data.old, req.auth.user.login.passw);
+  if (!check) {
+    Logger.warn('old password incorrect');
+    res.status(400).send({ msg: 'old password incorrect' });
+    return;
+  }
+  req.auth.user.login.passw = await Encrypt.hash(data.new);
+  await req.auth.user.save();
+  res.status(200).send({ msg: 'password changed' });
+};

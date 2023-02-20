@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { GetAuth, Login } from '@controllers/auth.controllers';
+import { GetAuth, Login, ChangePassword } from '@controllers/auth.controllers';
 
 const router = Router();
 
 router.post('/login', Login);
-
+router.put('/password', ChangePassword);
 router.get('/', GetAuth);
 
 export default router;
