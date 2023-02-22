@@ -12,10 +12,10 @@ export const expenseZod = z.object({
     value: z.number(),
     currency: currencyZod,
   }),
-  date_ex: z.date(),
+  date_ex: z.date().or(z.string()).default(new Date()).optional(),
   state: z.object({
     status: z.enum(['pending', 'approved', 'rejected']).default('pending'),
-    updated: z.date().default(new Date()),
+    updated: z.date().or(z.string()).default(new Date()),
   }),
   creatorEmp: employeeZod.or(z.string()),
   method: z.enum(['cash', 'bank', 'credit card']),
