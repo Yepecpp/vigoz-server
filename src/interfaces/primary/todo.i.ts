@@ -1,27 +1,25 @@
 import { z } from 'zod';
 import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
-export const todoZod = z.object({
-  id: z.string().optional(),
-  title: z.string(),
-  description: z.string(),
-  status: z.object({
-    isCompleted: z.boolean().default(false),
-    createdAt: z.date().default(new Date()),
-    completedAt: z.date().optional(),
-  }),
-  flags: z.array(z.enum(['important', 'urgent', 'private', 'public', 'completed', 'incomplete', 'renegated'])).optional(),
-  createdBy: z.object({
-    profile: z
+import { userZod } from './user.i';
+export const todoZod = z
+  .object({
+    id: z.string().optional(),
+    title: z.string(),
+    description: z.string(),
+    status: z.object({
+      isCompleted: z.boolean().default(false),
+      createdAt: z.date().or(z.string()).default(new Date()),
+      completedAt: z.date().optional(),
+    }),
+    flags: z.array(z.enum(['important', 'urgent', 'private', 'public', 'completed', 'incomplete', 'renegated'])).optional(),
+    createdBy: z
       .object({
-        name: z.string(),
-        email: z.string().email('Must be a valid email'),
-        phone: z.string().optional(),
-        avatar: z.string().url('Must be a valid URL'),
+        profile: z.string().or(userZod.optional()),
       })
       .optional(),
-  }),
-});
+  })
+  .strict();
 export const VerifySchema = function (Tdata?: ITodo | todoDocument): {
   success: boolean;
   err?: ReturnType<typeof zoderr>;

@@ -12,10 +12,9 @@ const todoSchema = new mongoose.Schema<todoDocument>({
   flags: { type: [String], required: false },
   createdBy: {
     profile: {
-      name: { type: String, required: false },
-      email: { type: String, required: false },
-      phone: { type: String, required: false },
-      avatar: { type: String, required: false },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
     },
   },
 });
@@ -33,7 +32,6 @@ todoSchema.methods.ToClient = function (): ITodo {
     description: curr.description,
     status: curr.status,
     flags: curr.flags,
-    createdBy: curr.createdBy,
   };
   return todo;
 };

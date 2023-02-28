@@ -5,6 +5,7 @@ import { PrivReq as Request } from '@utils/middleware';
 import Logger from '@libs/logger';
 import { ToQuery } from '@utils/mongooseUtils';
 export const getTodos = async (req: Request, res: Response) => {
+  req.query.createdBy = { profile: req.auth?.employee?._id.toString() as string };
   const query = ToQuery(req.query);
   const todos = await todosModel.find(query);
   res.status(200).send({ msg: 'todos', todos: todos.map((todo) => todo.ToClient()) });
@@ -16,6 +17,7 @@ export const postTodo = async (req: Request, res: Response) => {
     res.status(400).send({ msg: 'todo data is not valid', err: check.err });
     return;
   }
+  check.data.createdBy = { profile: req.auth?.employee?._id.toString() as string };
   const todo = new todosModel(check.data);
   await todo.save();
   res.status(201).send({ msg: 'todo added', todo: todo.ToClient() });
@@ -37,7 +39,6 @@ export const putTodo = async (req: Request, res: Response) => {
   todo.description = check.data.description;
   todo.status = check.data.status;
   todo.flags = check.data.flags;
-  todo.createdBy = check.data.createdBy;
   await todo.save();
   res.status(200).send({ msg: 'todo updated', todo: todo.ToClient() });
 };
