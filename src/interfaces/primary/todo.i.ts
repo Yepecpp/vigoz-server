@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import zoderr from '@utils/zoderr';
 import { userZod } from './user.i';
 export const todoZod = z.object({
-  id: z.string().optional(),
+  id: z.string().nullish().optional(),
   title: z.string(),
   description: z.string(),
   status: z
@@ -13,7 +13,7 @@ export const todoZod = z.object({
       completedAt: z.date().or(z.string()).optional(),
     })
     .optional(),
-  flags: z.array(z.enum(['important', 'urgent', 'private', 'public', 'completed', 'incomplete', 'renegated'])).optional(),
+  flags: z.array(z.enum(['important', 'urgent', 'private', 'public', 'completed', 'incomplete', 'renegated'])).nullish().optional(),
   createdBy: z
     .object({
       profile: z.string().or(userZod.optional()),
