@@ -17,6 +17,7 @@ export const postTodo = async (req: Request, res: Response) => {
     res.status(400).send({ msg: 'todo data is not valid', err: check.err });
     return;
   }
+  check.data.status = { isCompleted: false, createdAt: new Date() };
   check.data.createdBy = { profile: req.auth?.employee?._id.toString() as string };
   const todo = new todosModel(check.data);
   await todo.save();
@@ -34,6 +35,19 @@ export const putTodo = async (req: Request, res: Response) => {
     Logger.warn('todo not found');
     res.status(404).send({ msg: 'todo not found' });
     return;
+  }
+
+  if (
+    todo.createdBy &&
+    typeof todo.createdBy.profile !== 'string' &&
+    (todo.createdBy.profile as any).toString() !== req.auth?.employee?._id.toString()
+  ) {
+    Logger.warn('todo not found');
+    res.status(401).send({ msg: 'todo not found' });
+    return;
+  }
+  if (check.data.status && check.data.status.isCompleted) {
+    check.data.status.completedAt = new Date();
   }
   todo.title = check.data.title;
   todo.description = check.data.description;
